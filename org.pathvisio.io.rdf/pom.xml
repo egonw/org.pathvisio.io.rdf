@@ -1,0 +1,43 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.pathvisio</groupId>
+  <artifactId>org.pathvisio.io.rdf</artifactId>
+  <packaging>jar</packaging>
+  <version>1.0-SNAPSHOT</version>
+  <name>org.pathvisio.io.rdf</name>
+
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <maven.compiler.source>11</maven.compiler.source>
+    <maven.compiler.target>11</maven.compiler.target>
+    <jena.version>4.4.0</jena.version>
+    <junit.version>5.8.2</junit.version>
+    <libgpml.version>4.0.0-SNAPSHOT</libgpml.version>
+  </properties>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.apache.jena</groupId>
+      <artifactId>jena-arq</artifactId>
+      <version>${jena.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.pathvisio</groupId>
+      <artifactId>org.pathvisio.libgpml</artifactId>
+      <version>${libgpml.version}</version>
+    </dependency>
+    <dependency>
+        <groupId>org.junit.jupiter</groupId>
+        <artifactId>junit-jupiter</artifactId>
+        <scope>test</scope>
+        <version>${junit.version}</version>
+    </dependency>
+    <dependency>
+        <groupId>org.junit.jupiter</groupId>
+        <artifactId>junit-jupiter-engine</artifactId>
+        <scope>test</scope>
+        <version>${junit.version}</version>
+    </dependency>
+  </dependencies>
+</project>
