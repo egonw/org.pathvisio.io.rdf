@@ -14,6 +14,8 @@ public class ConvertorTest {
 
 	@Test
 	public void convertGpml() throws ConverterException {
+		Convertor convertor = new Convertor(null);
+
 		// read the pathway
 		PathwayModel pathway = new PathwayModel();
 		InputStream gpmlStream = getClass().getResourceAsStream("/WP4846.gpml"); 
@@ -22,7 +24,7 @@ public class ConvertorTest {
 		// convert the content
 		DataSource wpSource = DataSource.register("Wp", "WikiPathways").asDataSource();
 		pathway.getPathway().setXref(new Xref("WP4846", wpSource));
-		Model model = Convertor.convertWp(pathway);
+		Model model = convertor.convertWp(pathway);
 
 		// serialize RDF
 		model.setNsPrefix("dc", "http://purl.org/dc/elements/1.1/");

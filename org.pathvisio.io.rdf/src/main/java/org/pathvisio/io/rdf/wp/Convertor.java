@@ -27,6 +27,7 @@ import org.apache.jena.vocabulary.DCTerms;
 import org.apache.jena.vocabulary.DC_11;
 import org.apache.jena.vocabulary.RDF;
 import org.apache.jena.vocabulary.SKOS;
+import org.bridgedb.IDMapperStack;
 import org.pathvisio.io.rdf.ontologies.Wp;
 import org.pathvisio.io.rdf.utils.Utils;
 import org.pathvisio.libgpml.model.DataNode;
@@ -38,7 +39,13 @@ import org.pathvisio.libgpml.model.PathwayModel;
  */
 public class Convertor {
 
-	public static Model convertWp(PathwayModel pathway) {
+	DataNodeConvertor dataNodeConvertor;
+
+	public Convertor(IDMapperStack mapper) {
+		dataNodeConvertor = new DataNodeConvertor(mapper);
+	}
+	
+	public Model convertWp(PathwayModel pathway) {
 		Model model = ModelFactory.createDefaultModel();
 
 		// pathway
@@ -48,13 +55,13 @@ public class Convertor {
 		return model;
 	}
 
-	private static void generateDataNodeResources(Resource pwyRes, List<DataNode> dataNodes, Model model) {
+	private void generateDataNodeResources(Resource pwyRes, List<DataNode> dataNodes, Model model) {
 		for (DataNode node : dataNodes) {
-			
+			dataNodeConvertor.convertDataNode(node, model);
 		}
 	}
 
-	private static Resource generatePathwayResource(Pathway pathway, Model model) {
+	private Resource generatePathwayResource(Pathway pathway, Model model) {
 		String wpId = pathway.getXref().getId();
 		String revision = pathway.getVersion().trim().replaceAll(" ", "_");
 
