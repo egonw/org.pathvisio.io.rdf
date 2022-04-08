@@ -1,4 +1,4 @@
-package org.pathvisio.io.rdf.gpml;
+package org.pathvisio.io.rdf.wp;
 
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
@@ -22,11 +22,16 @@ public class ConvertorTest {
 		// convert the content
 		DataSource wpSource = DataSource.register("Wp", "WikiPathways").asDataSource();
 		pathway.getPathway().setXref(new Xref("WP4846", wpSource));
-		Model model = Convertor.convertGpml(pathway);
+		Model model = Convertor.convertWp(pathway);
 
 		// serialize RDF
-		model.setNsPrefix("gpml", "http://vocabularies.wikipathways.org/gpml#");
+		model.setNsPrefix("dc", "http://purl.org/dc/elements/1.1/");
+		model.setNsPrefix("dcterms", "http://purl.org/dc/terms/");
+		model.setNsPrefix("foaf", "http://xmlns.com/foaf/0.1/");
+		model.setNsPrefix("rdf", "http://www.w3.org/1999/02/22-rdf-syntax-ns#");
 		model.setNsPrefix("rdfs", "http://www.w3.org/2000/01/rdf-schema#");
+		model.setNsPrefix("skos", "http://www.w3.org/2004/02/skos/core#");
+		model.setNsPrefix("wp", "http://vocabularies.wikipathways.org/wp#");
 		model.setNsPrefix("xsd", "http://www.w3.org/2001/XMLSchema#");
 		ByteArrayOutputStream output = new ByteArrayOutputStream();
 		model.write(output, "TURTLE");
