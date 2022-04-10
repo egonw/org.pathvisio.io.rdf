@@ -14,17 +14,15 @@ public class ConvertorTest {
 
 	@Test
 	public void convertGpml() throws ConverterException {
-		Convertor convertor = new Convertor(null);
-
 		// read the pathway
 		PathwayModel pathway = new PathwayModel();
 		InputStream gpmlStream = getClass().getResourceAsStream("/WP4846.gpml"); 
 		pathway.readFromXml(gpmlStream, true);
-
-		// convert the content
 		DataSource wpSource = DataSource.register("Wp", "WikiPathways").asDataSource();
 		pathway.getPathway().setXref(new Xref("WP4846", wpSource));
-		Model model = convertor.convertWp(pathway);
+
+		// convert the content
+		Model model = new Convertor(pathway).asRDF();
 
 		// serialize RDF
 		model.setNsPrefix("dc", "http://purl.org/dc/elements/1.1/");
