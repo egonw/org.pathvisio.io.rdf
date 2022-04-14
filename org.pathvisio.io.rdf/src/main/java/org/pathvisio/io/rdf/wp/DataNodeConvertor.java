@@ -24,18 +24,19 @@ import org.bridgedb.DataSource;
 import org.bridgedb.IDMapperStack;
 import org.bridgedb.Xref;
 import org.pathvisio.io.rdf.ontologies.Wp;
-import org.pathvisio.io.rdf.utils.Utils;
 import org.pathvisio.libgpml.model.DataNode;
 
 public class DataNodeConvertor {
 
 	IDMapperStack mapper;
+	Convertor convertor;
 	
-	public DataNodeConvertor() {
-		this(null);
+	protected DataNodeConvertor(Convertor convertor) {
+		this(convertor, null);
 	}
 	
-	public DataNodeConvertor(IDMapperStack mapper) {
+	protected DataNodeConvertor(Convertor convertor, IDMapperStack mapper) {
+		this.convertor = convertor;
 		this.mapper = mapper;
 	}
 	
@@ -147,8 +148,7 @@ public class DataNodeConvertor {
 						//	PublicationXrefConverter.parsePublicationXrefWp(pubXref, datanodeRes, data.getPathwayRes(), model, mapper);
 						// }
 
-						datanodeRes.addProperty(Wp.isAbout, model.createResource(Utils.WP_RDF_URL + "/Pathway/" + data.getPwyId() + "_r" + data.getRevision() +
-								"/DataNode/" + elem.getGraphId()));
+						datanodeRes.addProperty(Wp.isAbout, model.createResource(convertor.pwyRes.getURI() + "/DataNode/" + elem.getElementId()));
 						// datanodeRes.addLiteral(RDFS.label, elem.getTextLabel().replace("\n", " ").trim());
 						// datanodeRes.addProperty(DCTerms.isPartOf, data.getPathwayRes());
 					}
