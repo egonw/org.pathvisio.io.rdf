@@ -13,7 +13,7 @@
     <maven.compiler.target>11</maven.compiler.target>
     <jena.version>4.4.0</jena.version>
     <junit.version>5.8.2</junit.version>
-    <libgpml.version>4.0.0-SNAPSHOT</libgpml.version>
+    <libgpml.version>4.0.1</libgpml.version>
   </properties>
 
   <distributionManagement>
