@@ -66,13 +66,8 @@ public class CreateGPMLRDF {
 		Model model = new Convertor(pathway).asRDF();
 
 		// serialize RDF
-		model.setNsPrefix("dc", "http://purl.org/dc/elements/1.1/");
-		model.setNsPrefix("dcterms", "http://purl.org/dc/terms/");
-		model.setNsPrefix("foaf", "http://xmlns.com/foaf/0.1/");
-		model.setNsPrefix("rdf", "http://www.w3.org/1999/02/22-rdf-syntax-ns#");
+		model.setNsPrefix("gpml", "http://vocabularies.wikipathways.org/gpml#");
 		model.setNsPrefix("rdfs", "http://www.w3.org/2000/01/rdf-schema#");
-		model.setNsPrefix("skos", "http://www.w3.org/2004/02/skos/core#");
-		model.setNsPrefix("wp", "http://vocabularies.wikipathways.org/wp#");
 		model.setNsPrefix("xsd", "http://www.w3.org/2001/XMLSchema#");
 		FileOutputStream output = new FileOutputStream(outFile);
 		model.write(output, "TURTLE");
