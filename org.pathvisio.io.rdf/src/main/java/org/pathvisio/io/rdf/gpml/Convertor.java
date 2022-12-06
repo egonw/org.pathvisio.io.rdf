@@ -17,12 +17,16 @@
 //
 package org.pathvisio.io.rdf.gpml;
 
+import java.util.List;
+
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.vocabulary.RDFS;
+import org.bridgedb.IDMapperStack;
 import org.pathvisio.io.rdf.ontologies.Gpml;
 import org.pathvisio.io.rdf.utils.Utils;
+import org.pathvisio.libgpml.model.DataNode;
 import org.pathvisio.libgpml.model.Pathway;
 import org.pathvisio.libgpml.model.PathwayModel;
 
@@ -31,18 +35,35 @@ import org.pathvisio.libgpml.model.PathwayModel;
  */
 public class Convertor {
 
-	public static Model convertGpml(PathwayModel pathway) {
+	PathwayModel pathway;
+
+	// cached things
+	Resource pwyRes;
+
+	public Convertor(PathwayModel pathway) {
+		this.pathway = pathway;
+	}
+
+	public Convertor(PathwayModel pathway, IDMapperStack mapper) {
+		this(pathway);
+	}
+	
+	public Model asRDF() {
 		Model model = ModelFactory.createDefaultModel();
-		parsePathwayInfoGpml(pathway.getPathway(), model);
+
+		// pathway
+		pwyRes = generatePathwayResource(pathway.getPathway(), model);
+		generateDataNodeResources(pathway.getDataNodes(), model);
+		
 		return model;
 	}
 
-	/**
-	 * conversion only GPML vocabulary
-	 */
-	public static Resource parsePathwayInfoGpml(Pathway p, Model model) {
-		String wpId = p.getXref().getId();
-		String revision = p.getVersion();
+	private void generateDataNodeResources(List<DataNode> dataNodes, Model model) {
+	}
+
+	private Resource generatePathwayResource(Pathway pathway, Model model) {
+		String wpId = pathway.getXref().getId();
+		String revision = pathway.getVersion();
 
 		Resource pwyRes = model.createResource(Utils.WP_RDF_URL + "/Pathway/" + wpId + "_r" + revision.trim().replaceAll(" ", "_"));
 		pwyRes.addProperty(RDFS.seeAlso, model.createResource("https://www.wikipathways.org/instance/" + wpId + "_r" + revision.trim().replaceAll(" ", "_")));
@@ -53,13 +74,13 @@ public class Convertor {
 		//}
 
 		// Required Attributes
-		pwyRes.addLiteral(Gpml.ORGANISM, p.getOrganism());
-		pwyRes.addLiteral(Gpml.BOARD_HEIGHT, p.getBoardHeight());
-		pwyRes.addLiteral(Gpml.BOARD_WIDTH, p.getBoardWidth());
-		pwyRes.addLiteral(Gpml.NAME, p.getTitle());
+		pwyRes.addLiteral(Gpml.ORGANISM, pathway.getOrganism());
+		pwyRes.addLiteral(Gpml.BOARD_HEIGHT, pathway.getBoardHeight());
+		pwyRes.addLiteral(Gpml.BOARD_WIDTH, pathway.getBoardWidth());
+		pwyRes.addLiteral(Gpml.NAME, pathway.getTitle());
 		
 		// Optional Attributes
-		if(p.getVersion() != null) pwyRes.addLiteral(Gpml.VERSION, p.getVersion());
+		if(pathway.getVersion() != null) pwyRes.addLiteral(Gpml.VERSION, pathway.getVersion());
 		// FIXME: if(p.getCopyright() != null) pwyRes.addLiteral(Gpml.LICENSE, p.getCopyright());
 		// FIXME: if(p.getAuthor() != null) pwyRes.addLiteral(Gpml.AUTHOR, p.getAuthor());
 		// FIXME: if(p.getEmail() != null) pwyRes.addLiteral(Gpml.EMAIL, p.getEmail());

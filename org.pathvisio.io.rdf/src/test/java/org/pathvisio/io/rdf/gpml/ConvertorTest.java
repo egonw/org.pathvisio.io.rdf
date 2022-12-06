@@ -7,6 +7,7 @@ import org.apache.jena.rdf.model.Model;
 import org.bridgedb.DataSource;
 import org.bridgedb.Xref;
 import org.junit.Test;
+import org.pathvisio.io.rdf.wp.Convertor;
 import org.pathvisio.libgpml.io.ConverterException;
 import org.pathvisio.libgpml.model.PathwayModel;
 
@@ -22,7 +23,7 @@ public class ConvertorTest {
 		// convert the content
 		DataSource wpSource = DataSource.register("Wp", "WikiPathways").asDataSource();
 		pathway.getPathway().setXref(new Xref("WP4846", wpSource));
-		Model model = Convertor.convertGpml(pathway);
+		Model model = new Convertor(pathway).asRDF();
 
 		// serialize RDF
 		model.setNsPrefix("gpml", "http://vocabularies.wikipathways.org/gpml#");
