@@ -20,6 +20,7 @@ import org.apache.jena.sparql.vocabulary.FOAF;
 import org.apache.jena.vocabulary.DC;
 import org.apache.jena.vocabulary.DCTerms;
 import org.apache.jena.vocabulary.RDF;
+import org.apache.jena.vocabulary.RDFS;
 import org.bridgedb.DataSource;
 import org.bridgedb.IDMapperStack;
 import org.bridgedb.Xref;
@@ -40,7 +41,7 @@ public class DataNodeConvertor {
 		this.mapper = mapper;
 	}
 	
-	public void convertDataNode(DataNode elem, Model model) {
+	public void convertDataNode(DataNode elem, Model model, IDMapperStack mapper) {
 		if(elem.getXref() != null && elem.getXref().getId() != null && elem.getXref().getDataSource() != null) {
 			if(!elem.getType().equals("Unknown")) {
 				if (elem.getXref().getId() != null && elem.getXref().getId().trim().length() > 0) {
@@ -107,7 +108,9 @@ public class DataNodeConvertor {
 								datanodeRes.addProperty(RDF.type, Wp.Metabolite);
 								// add id mapping step
 								
-								// GpmlConverter.getUnifiedIdentifiers(model, mapper, idXref, datanodeRes);
+								try {
+									IdentifierConvertor.getUnifiedIdentifiers(model, mapper, elem.getXref(), datanodeRes);
+								} catch (Exception exception) {} // ignore
 								
 								break;
 								
@@ -149,7 +152,7 @@ public class DataNodeConvertor {
 						// }
 
 						datanodeRes.addProperty(Wp.isAbout, model.createResource(convertor.pwyRes.getURI() + "/DataNode/" + elem.getElementId()));
-						// datanodeRes.addLiteral(RDFS.label, elem.getTextLabel().replace("\n", " ").trim());
+						datanodeRes.addLiteral(RDFS.label, elem.getTextLabel().replace("\n", " ").trim());
 						// datanodeRes.addProperty(DCTerms.isPartOf, data.getPathwayRes());
 					}
 				}

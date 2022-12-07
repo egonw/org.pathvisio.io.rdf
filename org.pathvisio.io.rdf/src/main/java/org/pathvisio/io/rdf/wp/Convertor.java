@@ -17,7 +17,10 @@
 //
 package org.pathvisio.io.rdf.wp;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.util.List;
+import java.util.Properties;
 
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
@@ -41,20 +44,17 @@ public class Convertor {
 
 	PathwayModel pathway;
 	DataNodeConvertor dataNodeConvertor;
+	IDMapperStack mapper;
 
 	// cached things
 	Resource pwyRes;
 
-	public Convertor(PathwayModel pathway) {
+	public Convertor(PathwayModel pathway) throws Exception {
 		this.pathway = pathway;
 		dataNodeConvertor = new DataNodeConvertor(this);
+		mapper = maps();
 	}
 
-	public Convertor(PathwayModel pathway, IDMapperStack mapper) {
-		this(pathway);
-		dataNodeConvertor = new DataNodeConvertor(this, mapper);
-	}
-	
 	public Model asRDF() {
 		Model model = ModelFactory.createDefaultModel();
 
@@ -67,7 +67,7 @@ public class Convertor {
 
 	private void generateDataNodeResources(List<DataNode> dataNodes, Model model) {
 		for (DataNode node : dataNodes) {
-			dataNodeConvertor.convertDataNode(node, model);
+			dataNodeConvertor.convertDataNode(node, model, mapper);
 		}
 	}
 
@@ -90,4 +90,16 @@ public class Convertor {
 		return pwyRes;
 	}
 
+	private static IDMapperStack maps() throws Exception {
+		final Properties prop = new Properties();
+		String derbyFolder = "/tmp/" + System.getProperty("OPSBRIDGEDB", "OPSBRIDGEDB");
+		if (new File(derbyFolder).exists()) {
+  	        prop.load(new FileInputStream(derbyFolder + "/config.properties"));
+		    IDMapperStack mapper = IdentifierConvertor.createBridgeDbMapper(prop);
+		    return mapper;
+		} else {
+			System.out.println("WARN: BridgeDb config file folder does not exist: " + derbyFolder);
+		}
+		return new IDMapperStack();
+	}
 }

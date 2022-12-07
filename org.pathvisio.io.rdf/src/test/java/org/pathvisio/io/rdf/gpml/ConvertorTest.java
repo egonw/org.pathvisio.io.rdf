@@ -7,14 +7,12 @@ import org.apache.jena.rdf.model.Model;
 import org.bridgedb.DataSource;
 import org.bridgedb.Xref;
 import org.junit.Test;
-import org.pathvisio.io.rdf.wp.Convertor;
-import org.pathvisio.libgpml.io.ConverterException;
 import org.pathvisio.libgpml.model.PathwayModel;
 
 public class ConvertorTest {
 
 	@Test
-	public void convertGpml() throws ConverterException {
+	public void convertGpml() throws Exception {
 		// read the pathway
 		PathwayModel pathway = new PathwayModel();
 		InputStream gpmlStream = getClass().getResourceAsStream("/WP4846.gpml"); 
