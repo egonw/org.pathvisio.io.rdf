@@ -53,7 +53,7 @@ public class CreateWPRDF {
         String outFile  = args[1];
         int index = gpmlFile.indexOf("WP");
         String localFile = gpmlFile.substring(index);
-        String wpid     = localFile.substring(2,localFile.indexOf("."));
+        String wpid     = localFile.substring(0,localFile.indexOf("."));
 
         DataSourceTxt.init();
         DataSource wpSource = DataSource.register("Wp", "WikiPathways").asDataSource();
