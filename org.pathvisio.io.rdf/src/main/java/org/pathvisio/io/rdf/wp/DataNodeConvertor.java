@@ -91,24 +91,22 @@ public class DataNodeConvertor {
 							switch (elem.getType().getName()) {
 							case "GeneProduct":
 								datanodeRes.addProperty(RDF.type, Wp.GeneProduct);
-								// add id mapping step
-								
-								// // GpmlConverter.getUnifiedIdentifiers(model, mapper, idXref, datanodeRes);
+								try {
+									IdentifierConvertor.getUnifiedIdentifiers(model, mapper, elem.getXref(), datanodeRes);
+								} catch (Exception exception) {} // ignore
 								
 								break;
 								
 							case "Protein":
 								datanodeRes.addProperty(RDF.type, Wp.Protein);
-								// add id mapping step
-								
-								// // GpmlConverter.getUnifiedIdentifiers(model, mapper, idXref, datanodeRes);
+								try {
+									IdentifierConvertor.getUnifiedIdentifiers(model, mapper, elem.getXref(), datanodeRes);
+								} catch (Exception exception) {} // ignore
 								
 								break;
 								
 							case "Metabolite":
 								datanodeRes.addProperty(RDF.type, Wp.Metabolite);
-								// add id mapping step
-								
 								try {
 									IdentifierConvertor.getUnifiedIdentifiers(model, mapper, elem.getXref(), datanodeRes);
 								} catch (Exception exception) {} // ignore
@@ -117,10 +115,9 @@ public class DataNodeConvertor {
 								
 							case "Rna":
 								datanodeRes.addProperty(RDF.type, Wp.Rna);
-								// add id mapping step
-								
-								// GpmlConverter.getUnifiedIdentifiers(model, mapper, idXref, datanodeRes);
-
+								try {
+									IdentifierConvertor.getUnifiedIdentifiers(model, mapper, elem.getXref(), datanodeRes);
+								} catch (Exception exception) {} // ignore
 								
 								break;
 							case "Pathway":
@@ -129,9 +126,9 @@ public class DataNodeConvertor {
 								break;
 							case "Complex":
 								datanodeRes.addProperty(RDF.type, Wp.Complex);
-								// add id mapping step
-
-								// GpmlConverter.getUnifiedIdentifiers(model, mapper, idXref, datanodeRes);
+								try {
+									IdentifierConvertor.getUnifiedIdentifiers(model, mapper, elem.getXref(), datanodeRes);
+								} catch (Exception exception) {} // ignore
 
 								break;
 							default:
