@@ -59,19 +59,23 @@ public class Convertor {
 		Model model = ModelFactory.createDefaultModel();
 
 		// pathway
-		pwyRes = generatePathwayResource(pathway.getPathway(), model);
+		pwyRes = generatePathwayResource(model);
 		generateDataNodeResources(pathway.getDataNodes(), model);
 		
 		return model;
 	}
 
 	private void generateDataNodeResources(List<DataNode> dataNodes, Model model) {
+		String wpId = this.pathway.getPathway().getXref().getId();
+		String revision = this.pathway.getPathway().getVersion().trim().replaceAll(" ", "_");
+
 		for (DataNode node : dataNodes) {
-			dataNodeConvertor.convertDataNode(node, model, mapper);
+			dataNodeConvertor.convertDataNode(node, model, mapper, wpId, revision);
 		}
 	}
 
-	private Resource generatePathwayResource(Pathway pathway, Model model) {
+	private Resource generatePathwayResource(Model model) {
+		Pathway pathway = this.pathway.getPathway();
 		String wpId = pathway.getXref().getId();
 		String revision = pathway.getVersion().trim().replaceAll(" ", "_");
 
