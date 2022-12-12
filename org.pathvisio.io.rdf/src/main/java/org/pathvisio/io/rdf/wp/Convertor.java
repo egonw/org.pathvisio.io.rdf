@@ -70,7 +70,7 @@ public class Convertor {
 		String revision = this.pathway.getPathway().getVersion().trim().replaceAll(" ", "_");
 
 		for (DataNode node : dataNodes) {
-			dataNodeConvertor.convertDataNode(node, model, mapper, wpId, revision);
+			dataNodeConvertor.convertDataNode(node, model, wpId, revision);
 		}
 	}
 

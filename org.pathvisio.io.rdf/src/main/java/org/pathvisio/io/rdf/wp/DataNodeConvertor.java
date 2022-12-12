@@ -42,7 +42,7 @@ public class DataNodeConvertor {
 		this.mapper = mapper;
 	}
 	
-	public void convertDataNode(DataNode elem, Model model, IDMapperStack mapper, String wpId, String revision) {
+	public void convertDataNode(DataNode elem, Model model, String wpId, String revision) {
 		if(elem.getXref() != null && elem.getXref().getId() != null && elem.getXref().getDataSource() != null) {
 			if(!elem.getType().equals("Unknown")) {
 				if (elem.getXref().getId() != null && elem.getXref().getId().trim().length() > 0) {
