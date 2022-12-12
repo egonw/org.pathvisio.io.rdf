@@ -37,6 +37,7 @@ public class CreateWPRDF {
 	public static void main(String[] args) throws Exception {
 		final Options options = new Options();
 		options.addOption(new Option("h", "help", false, "Display the help information."));
+		options.addOption(new Option("r", "revision", true, "Revision of the pathway."));
 
 		CommandLineParser parser = new DefaultParser();
 		CommandLine cmd = parser.parse(options, args);
@@ -47,6 +48,7 @@ public class CreateWPRDF {
 			System.exit(0);
 		}
 
+		args = cmd.getArgs();
         String gpmlFile = args[0];
         String outFile  = args[1];
         int index = gpmlFile.indexOf("WP");
@@ -61,6 +63,7 @@ public class CreateWPRDF {
 		pathway.readFromXml(gpmlStream, true);
 		
 		pathway.getPathway().setXref(new Xref(wpid, wpSource));
+		if (cmd.hasOption('r')) pathway.getPathway().setVersion(cmd.getOptionValue('r'));
 
 		// convert the content
 		Model model = new Convertor(pathway).asRDF();
