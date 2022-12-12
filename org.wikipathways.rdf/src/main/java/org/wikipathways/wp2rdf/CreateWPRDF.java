@@ -69,13 +69,22 @@ public class CreateWPRDF {
 		Model model = new Convertor(pathway).asRDF();
 
 		// serialize RDF
+		model.setNsPrefix("biopax", "http://www.biopax.org/release/biopax-level3.owl#");
+		model.setNsPrefix("cito", "http://purl.org/spar/cito/");
 		model.setNsPrefix("dc", "http://purl.org/dc/elements/1.1/");
 		model.setNsPrefix("dcterms", "http://purl.org/dc/terms/");
 		model.setNsPrefix("foaf", "http://xmlns.com/foaf/0.1/");
+		model.setNsPrefix("freq", "http://purl.org/cld/freq/");
+		model.setNsPrefix("gpml", "http://vocabularies.wikipathways.org/gpml#");
+		model.setNsPrefix("owl", "http://www.w3.org/2002/07/owl#");
+		model.setNsPrefix("pav", "http://purl.org/pav/");
+		model.setNsPrefix("prov", "http://www.w3.org/ns/prov#");
 		model.setNsPrefix("rdf", "http://www.w3.org/1999/02/22-rdf-syntax-ns#");
 		model.setNsPrefix("rdfs", "http://www.w3.org/2000/01/rdf-schema#");
 		model.setNsPrefix("skos", "http://www.w3.org/2004/02/skos/core#");
+		model.setNsPrefix("void", "http://rdfs.org/ns/void#");
 		model.setNsPrefix("wp", "http://vocabularies.wikipathways.org/wp#");
+		model.setNsPrefix("wprdf", "http://rdf.wikipathways.org/");
 		model.setNsPrefix("xsd", "http://www.w3.org/2001/XMLSchema#");
 		FileOutputStream output = new FileOutputStream(outFile);
 		model.write(output, "TURTLE");
