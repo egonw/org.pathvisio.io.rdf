@@ -41,12 +41,16 @@ public class DataNodeConvertor {
 		this.convertor = convertor;
 		this.mapper = mapper;
 	}
-	
+
+	public boolean validXref(Xref xref) {
+		return xref != null && xref.getId() != null && xref.getDataSource() != null;
+	}
+
 	public void convertDataNode(DataNode elem, Model model, String wpId, String revision) {
-		if(elem.getXref() != null && elem.getXref().getId() != null && elem.getXref().getDataSource() != null) {
+		Xref xref = elem.getXref();
+		if (validXref(xref)) {
 			if(!elem.getType().equals("Unknown")) {
-				if (elem.getXref().getId() != null && elem.getXref().getId().trim().length() > 0) {
-					Xref xref = elem.getXref();
+				if (xref.getId() != null && elem.getXref().getId().trim().length() > 0) {
 					String xrefid = xref.getId(); 
 					DataSource datasource = xref.getDataSource(); 
 					String url = datasource.getIdentifiersOrgUri(xrefid);
