@@ -34,6 +34,7 @@ import org.bridgedb.IDMapperStack;
 import org.pathvisio.io.rdf.ontologies.Wp;
 import org.pathvisio.io.rdf.utils.Utils;
 import org.pathvisio.libgpml.model.DataNode;
+import org.pathvisio.libgpml.model.Interaction;
 import org.pathvisio.libgpml.model.Pathway;
 import org.pathvisio.libgpml.model.PathwayModel;
 
@@ -44,6 +45,7 @@ public class Convertor {
 
 	PathwayModel pathway;
 	DataNodeConvertor dataNodeConvertor;
+	InteractionConvertor interactionConvertor;
 	IDMapperStack mapper;
 
 	// cached things
@@ -52,6 +54,7 @@ public class Convertor {
 	public Convertor(PathwayModel pathway) throws Exception {
 		this.pathway = pathway;
 		dataNodeConvertor = new DataNodeConvertor(this);
+		interactionConvertor = new InteractionConvertor(this);
 		mapper = maps();
 	}
 
@@ -61,8 +64,15 @@ public class Convertor {
 		// pathway
 		pwyRes = generatePathwayResource(model);
 		generateDataNodeResources(pathway.getDataNodes(), model);
+		generateInteractionResources(pathway.getInteractions(), model);
 		
 		return model;
+	}
+
+	private void generateInteractionResources(List<Interaction> interactions, Model model) {
+		for (Interaction interaction : interactions) {
+			interactionConvertor.convertInteraction(interaction, model);
+		}
 	}
 
 	private void generateDataNodeResources(List<DataNode> dataNodes, Model model) {
