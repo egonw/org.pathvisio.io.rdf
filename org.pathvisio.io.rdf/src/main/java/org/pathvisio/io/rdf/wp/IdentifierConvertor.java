@@ -69,8 +69,8 @@ public class IdentifierConvertor {
 		return mapper;
 	}
 
-	public static void getUnifiedIdentifiers(Model model, IDMapper  mapper, Xref idXref, Resource internalWPDataNodeResource) throws IDMapperException, UnsupportedEncodingException {
-//		System.out.println(idXref);
+	public static void getUnifiedGeneIdentifiers(Model model, IDMapper  mapper, Xref idXref, Resource internalWPDataNodeResource) throws IDMapperException, UnsupportedEncodingException {
+//		System.out.println("gene xref: " + idXref);
 		//ENSEMBL
 		outputBridgeDbMapping(model, mapper, idXref, internalWPDataNodeResource,
 			"En", "https://identifiers.org/ensembl/", Wp.bdbEnsembl
@@ -87,9 +87,10 @@ public class IdentifierConvertor {
 		outputBridgeDbMapping(model, mapper, idXref, internalWPDataNodeResource,
 			"H", "https://identifiers.org/hgnc.symbol/", Wp.bdbHgncSymbol
 		);
+	}
 
-		// Metabolites
-
+	public static void getUnifiedMetaboliteIdentifiers(Model model, IDMapper  mapper, Xref idXref, Resource internalWPDataNodeResource) throws IDMapperException, UnsupportedEncodingException {
+//		System.out.println(idXref);
 		//HMDB
 		outputBridgeDbMapping(model, mapper, idXref, internalWPDataNodeResource,
 			"Ch", "https://identifiers.org/hmdb/", Wp.bdbHmdb
@@ -136,9 +137,10 @@ public class IdentifierConvertor {
 				System.out.println("InChIKey exception: " + exception.getMessage());
 			}
 		}
+	}
 
-		// Interactions
-
+	public static void getUnifiedInteractionIdentifiers(Model model, IDMapper  mapper, Xref idXref, Resource internalWPDataNodeResource) throws IDMapperException, UnsupportedEncodingException {
+//		System.out.println(idXref);
 		// Reactome
 		outputBridgeDbMapping(model, mapper, idXref, internalWPDataNodeResource,
 			"Re", "https://identifiers.org/reactome/", Wp.bdbReactome
@@ -147,16 +149,17 @@ public class IdentifierConvertor {
 		outputBridgeDbMapping(model, mapper, idXref, internalWPDataNodeResource,
 			"Rh", "https://identifiers.org/rhea/", Wp.bdbRhea
 		);
+	}
 
-		// Complexes
-
-		// Complex Portal
+	public static void getUnifiedComplexIdentifiers(Model model, IDMapper  mapper, Xref idXref, Resource internalWPDataNodeResource) throws IDMapperException, UnsupportedEncodingException {
+//		System.out.println(idXref);
 		outputBridgeDbMapping(model, mapper, idXref, internalWPDataNodeResource,
 			"Cpx", "https://identifiers.org/complexportal/", Wp.bdbComplexPortal
 		);
+	}
 
-		// Literature references
-
+	public static void getUnifiedLiteratureIdentifiers(Model model, IDMapper  mapper, Xref idXref, Resource internalWPDataNodeResource) throws IDMapperException, UnsupportedEncodingException {
+//		System.out.println(idXref);
 		// DOI
 		outputBridgeDbMapping(model, mapper, idXref, internalWPDataNodeResource,
 			"Pbd", "https://doi.org/", OWL.sameAs

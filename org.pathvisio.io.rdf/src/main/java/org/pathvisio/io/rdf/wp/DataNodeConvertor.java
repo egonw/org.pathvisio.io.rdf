@@ -92,7 +92,7 @@ public class DataNodeConvertor {
 							case "GeneProduct":
 								datanodeRes.addProperty(RDF.type, Wp.GeneProduct);
 								try {
-									IdentifierConvertor.getUnifiedIdentifiers(model, mapper, elem.getXref(), datanodeRes);
+									IdentifierConvertor.getUnifiedGeneIdentifiers(model, mapper, elem.getXref(), datanodeRes);
 								} catch (Exception exception) {} // ignore
 								
 								break;
@@ -100,7 +100,7 @@ public class DataNodeConvertor {
 							case "Protein":
 								datanodeRes.addProperty(RDF.type, Wp.Protein);
 								try {
-									IdentifierConvertor.getUnifiedIdentifiers(model, mapper, elem.getXref(), datanodeRes);
+									IdentifierConvertor.getUnifiedGeneIdentifiers(model, mapper, elem.getXref(), datanodeRes);
 								} catch (Exception exception) {} // ignore
 								
 								break;
@@ -108,7 +108,7 @@ public class DataNodeConvertor {
 							case "Metabolite":
 								datanodeRes.addProperty(RDF.type, Wp.Metabolite);
 								try {
-									IdentifierConvertor.getUnifiedIdentifiers(model, mapper, elem.getXref(), datanodeRes);
+									IdentifierConvertor.getUnifiedMetaboliteIdentifiers(model, mapper, elem.getXref(), datanodeRes);
 								} catch (Exception exception) {} // ignore
 								
 								break;
@@ -116,7 +116,7 @@ public class DataNodeConvertor {
 							case "Rna":
 								datanodeRes.addProperty(RDF.type, Wp.Rna);
 								try {
-									IdentifierConvertor.getUnifiedIdentifiers(model, mapper, elem.getXref(), datanodeRes);
+									IdentifierConvertor.getUnifiedGeneIdentifiers(model, mapper, elem.getXref(), datanodeRes);
 								} catch (Exception exception) {} // ignore
 								
 								break;
@@ -127,7 +127,7 @@ public class DataNodeConvertor {
 							case "Complex":
 								datanodeRes.addProperty(RDF.type, Wp.Complex);
 								try {
-									IdentifierConvertor.getUnifiedIdentifiers(model, mapper, elem.getXref(), datanodeRes);
+									IdentifierConvertor.getUnifiedComplexIdentifiers(model, mapper, elem.getXref(), datanodeRes);
 								} catch (Exception exception) {} // ignore
 
 								break;
