@@ -53,9 +53,9 @@ public class Convertor {
 
 	public Convertor(PathwayModel pathway) throws Exception {
 		this.pathway = pathway;
-		dataNodeConvertor = new DataNodeConvertor(this);
-		interactionConvertor = new InteractionConvertor(this);
 		mapper = maps();
+		dataNodeConvertor = new DataNodeConvertor(this, mapper);
+		interactionConvertor = new InteractionConvertor(this, mapper);
 	}
 
 	public Model asRDF() {
