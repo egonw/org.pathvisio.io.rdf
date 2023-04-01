@@ -1,3 +1,5 @@
+[![build](https://github.com/egonw/org.pathvisio.io.rdf/actions/workflows/maven.yml/badge.svg)](https://github.com/egonw/org.pathvisio.io.rdf/actions/workflows/maven.yml)
+
 # org.pathvisio.io.rdf
 
 Library for saving GPMLRDF and WPRDF for a GPML data model. It consists of two parts,
