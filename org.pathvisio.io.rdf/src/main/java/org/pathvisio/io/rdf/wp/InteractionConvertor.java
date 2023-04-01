@@ -18,10 +18,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.jena.rdf.model.Model;
+import org.apache.jena.rdf.model.Resource;
+import org.apache.jena.vocabulary.RDF;
 import org.bridgedb.IDMapperStack;
+import org.pathvisio.io.rdf.ontologies.Wp;
+import org.pathvisio.io.rdf.utils.Utils;
 import org.pathvisio.libgpml.model.Interaction;
 import org.pathvisio.libgpml.model.LineElement.Anchor;
 import org.pathvisio.libgpml.model.PathwayObject;
+import org.pathvisio.libgpml.model.type.ArrowHeadType;
+import org.pathvisio.libgpml.model.type.ObjectType;
 
 /**
  * 
@@ -47,7 +53,7 @@ public class InteractionConvertor {
 	 * conversion only WP vocabulary
 	 * semantic information about interactions
 	 */
-	public void convertInteraction(Interaction interaction, Model model) {
+	public void convertInteraction(Interaction interaction, Model model, String wpId, String revision) {
 		boolean ignore = pointingTowardsLine(interaction);
 		if(!ignore) {
 			List<Interaction> participatingLines = new ArrayList<Interaction>();
@@ -56,34 +62,46 @@ public class InteractionConvertor {
 			
 			for (Anchor a : interaction.getAnchors()) {
 				for (Interaction currLine : this.convertor.pathway.getInteractions()) {
-					
+					if (currLine.getObjectType().equals(ObjectType.INTERACTION)) {
+						if (currLine.getStartElementRef() != null) {
+							if(currLine.getStartElementRef().equals(a.getElementId())) {
+								if(currLine.getStartArrowHeadType().equals(ArrowHeadType.UNDIRECTED)) {
+									if(!participatingLines.contains(currLine)) participatingLines.add(currLine);
+								} else {
+									if(!regLines.contains(currLine)) regLines.add(currLine);
+								}
+							} 
+						}
+						if(currLine.getEndElementRef() != null) {
+							if(currLine.getEndElementRef().equals(a.getElementId())) {
+								if(currLine.getEndArrowHeadType().equals(ArrowHeadType.UNDIRECTED)) {
+									if(!participatingLines.contains(currLine)) participatingLines.add(currLine);
+								} else {
+									if(!regLines.contains(currLine)) regLines.add(currLine);
+								}
+							}
+						}
+					}
 				}
 			}
 
-//			for(MAnchor a : e.getMAnchors()) {
-//				for(PathwayElement currLine : data.getPathway().getDataObjects()) {
-//					if(currLine.getObjectType().equals(ObjectType.LINE)) {
-//						if(currLine.getStartGraphRef() != null) {
-//							if(currLine.getStartGraphRef().equals(a.getGraphId())) {
-//								if(currLine.getStartLineType().equals(LineType.LINE)) {
-//									if(!participatingLines.contains(currLine)) participatingLines.add((MLine)currLine);
-//								} else {
-//									if(!regLines.contains(currLine)) regLines.add((MLine)currLine);
-//								}
-//							} 
-//						}		
-//						if(currLine.getEndGraphRef() != null) {
-//							if(currLine.getEndGraphRef().equals(a.getGraphId())) {
-//								if(currLine.getEndLineType().equals(LineType.LINE)) {
-//									if(!participatingLines.contains(currLine)) participatingLines.add((MLine)currLine);
-//								} else {
-//									if(!regLines.contains(currLine)) regLines.add((MLine)currLine);
-//								}
-//							}
-//						}
-//					}
+			ArrowHeadType lt = getInteractionType(participatingLines);
+			if(lt == null) {
+				System.out.println("WARNING - different line types in one interaction");
+			} else if (lt.equals(ArrowHeadType.UNDIRECTED)) {
+//				undirected interactions
+//				if(target.size() != 0) {
+//					System.out.println("Problem - undirected with targets should not be there");
+//				} else {
+					String url = Utils.WP_RDF_URL + "/Pathway/" +
+							wpId + "_r" + revision
+							+ "/WP/Interaction/" + interaction.getElementId();
+					Resource intRes = model.createResource(url);
+					intRes.addProperty(RDF.type, Wp.Interaction);
+					//				intRes.addProperty(DCTerms.isPartOf, data.getPathwayRes());
 //				}
-//			}
+			}
+
 		}
 	}
 
@@ -108,4 +126,25 @@ public class InteractionConvertor {
 		}
 		return ignore;
 	}
+
+	private static ArrowHeadType getInteractionType(List<Interaction> participatingLines) {
+		List<ArrowHeadType> lineTypes = new ArrayList<ArrowHeadType>();
+		for(Interaction l : participatingLines) {
+			System.out.println("type: " + l.getObjectType());
+			if(!l.getStartArrowHeadType().equals(ArrowHeadType.UNDIRECTED)) {
+				if(!lineTypes.contains(l.getStartArrowHeadType())) lineTypes.add(l.getStartArrowHeadType());
+			}
+			if(!l.getEndArrowHeadType().equals(ArrowHeadType.UNDIRECTED)) {
+				if(!lineTypes.contains(l.getEndArrowHeadType())) lineTypes.add(l.getEndArrowHeadType());
+			}
+		}
+		if(lineTypes.size() > 1) {
+			return null;
+		} else if (lineTypes.size() == 1) {
+			return lineTypes.get(0);
+		} else {
+			return ArrowHeadType.UNDIRECTED;
+		}
+	}
+
 }

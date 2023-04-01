@@ -70,8 +70,11 @@ public class Convertor {
 	}
 
 	private void generateInteractionResources(List<Interaction> interactions, Model model) {
+		String wpId = this.pathway.getPathway().getXref().getId();
+		String revision = this.pathway.getPathway().getVersion().trim().replaceAll(" ", "_");
+
 		for (Interaction interaction : interactions) {
-			interactionConvertor.convertInteraction(interaction, model);
+			interactionConvertor.convertInteraction(interaction, model, wpId, revision);
 		}
 	}
 
