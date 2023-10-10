@@ -4,7 +4,7 @@
   <groupId>org.pathvisio</groupId>
   <artifactId>org.pathvisio.io.rdf</artifactId>
   <packaging>jar</packaging>
-  <version>4.0.0</version>
+  <version>4.0.1-SNAPSHOT</version>
   <name>org.pathvisio.io.rdf</name>
 
   <properties>
