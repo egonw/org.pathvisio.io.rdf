@@ -60,7 +60,7 @@ public class CreateWPRDF {
 
         PathwayModel pathway = new PathwayModel();
 		InputStream gpmlStream = new FileInputStream(new File(gpmlFile)); 
-		pathway.readFromXml(gpmlStream, true);
+		pathway.readFromXml(gpmlStream, false);
 		
 		pathway.getPathway().setXref(new Xref(wpid, wpSource));
 		if (cmd.hasOption('r')) pathway.getPathway().setVersion(cmd.getOptionValue('r'));
