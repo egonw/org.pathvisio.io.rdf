@@ -130,7 +130,6 @@ public class InteractionConvertor {
 	private static ArrowHeadType getInteractionType(List<Interaction> participatingLines) {
 		List<ArrowHeadType> lineTypes = new ArrayList<ArrowHeadType>();
 		for(Interaction l : participatingLines) {
-			System.out.println("type: " + l.getObjectType());
 			if(!l.getStartArrowHeadType().equals(ArrowHeadType.UNDIRECTED)) {
 				if(!lineTypes.contains(l.getStartArrowHeadType())) lineTypes.add(l.getStartArrowHeadType());
 			}
