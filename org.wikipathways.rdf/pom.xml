@@ -114,7 +114,7 @@
     <dependency>
       <groupId>org.pathvisio</groupId>
       <artifactId>org.pathvisio.io.rdf</artifactId>
-      <version>1.0-SNAPSHOT</version>
+      <version>${project.version}</version>
     </dependency>
     <dependency>
       <groupId>commons-cli</groupId>
