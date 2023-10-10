@@ -29,3 +29,17 @@ cd org.wikipathways.rdf
 java -cp target/gpml2rdf-4.0.0-SNAPSHOT.jar org.wikipathways.wp2rdf.CreateGPMLRDF path/to/WP4297.gpml WP4297.ttl
 java -cp target/gpml2rdf-4.0.0-SNAPSHOT.jar org.wikipathways.wp2rdf.CreateWPRDF path/to/WP4297.gpml WP4297.ttl
 ```
+
+## Release alpha versions
+
+This code is nowhere close to be replacing the current GPMLRDF, but a 4.0.0 series will
+be released as alpha to start putting together the full toolchain, which requires testing
+the whole workflow in action.
+
+Version are updated with:
+
+```
+mvn versions:set -DnewVersion=4.0.0
+git commit -m "New release" -a
+```
+
