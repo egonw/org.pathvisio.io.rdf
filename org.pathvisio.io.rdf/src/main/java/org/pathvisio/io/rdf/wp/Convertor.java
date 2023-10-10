@@ -95,7 +95,8 @@ public class Convertor {
 		pwyRes.addLiteral(DC_11.source, "WikiPathways");
 		pwyRes.addLiteral(DCTerms.identifier, wpId);
 		pwyRes.addLiteral(DC_11.title, model.createLiteral(pathway.getTitle(), "en"));
-		pwyRes.addLiteral(DCTerms.description, pathway.getDescription());
+		if (pathway.getDescription() != null)
+			pwyRes.addLiteral(DCTerms.description, pathway.getDescription());
 		pwyRes.addLiteral(Wp.organismName, pathway.getOrganism());
 		pwyRes.addProperty(Wp.isAbout, model.createResource(Utils.WP_RDF_URL + "/Pathway/" + wpId + "_r" + revision));
 		pwyRes.addProperty(FOAF.page, model.createResource("http://www.wikipathways.org/instance/" + wpId + "_r" + revision));
