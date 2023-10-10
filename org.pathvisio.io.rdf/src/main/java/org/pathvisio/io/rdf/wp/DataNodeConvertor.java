@@ -95,46 +95,28 @@ public class DataNodeConvertor {
 							switch (elem.getType().getName()) {
 							case "GeneProduct":
 								datanodeRes.addProperty(RDF.type, Wp.GeneProduct);
-								try {
-									IdentifierConvertor.getUnifiedGeneIdentifiers(model, mapper, elem.getXref(), datanodeRes);
-								} catch (Exception exception) {} // ignore
-								
 								break;
 								
 							case "Protein":
 								datanodeRes.addProperty(RDF.type, Wp.Protein);
-								try {
-									IdentifierConvertor.getUnifiedGeneIdentifiers(model, mapper, elem.getXref(), datanodeRes);
-								} catch (Exception exception) {} // ignore
-								
 								break;
 								
 							case "Metabolite":
 								datanodeRes.addProperty(RDF.type, Wp.Metabolite);
-								try {
-									IdentifierConvertor.getUnifiedMetaboliteIdentifiers(model, mapper, elem.getXref(), datanodeRes);
-								} catch (Exception exception) {} // ignore
-								
 								break;
 								
 							case "Rna":
 								datanodeRes.addProperty(RDF.type, Wp.Rna);
-								try {
-									IdentifierConvertor.getUnifiedGeneIdentifiers(model, mapper, elem.getXref(), datanodeRes);
-								} catch (Exception exception) {} // ignore
-								
 								break;
+
 							case "Pathway":
 								datanodeRes.addProperty(RDF.type, Wp.Pathway);
-								// TODO: unified identifiers (e.g. for Reactome pathways!)
 								break;
+
 							case "Complex":
 								datanodeRes.addProperty(RDF.type, Wp.Complex);
-								try {
-									IdentifierConvertor.getUnifiedComplexIdentifiers(model, mapper, elem.getXref(), datanodeRes);
-								} catch (Exception exception) {} // ignore
-
 								break;
+
 							default:
 								break;
 							}
