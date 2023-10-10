@@ -14,7 +14,6 @@
     <jena.version>4.4.0</jena.version>
     <junit.version>5.8.2</junit.version>
     <libgpml.version>4.0.3</libgpml.version>
-    <derby.version>10.15.2.0</derby.version>
   </properties>
 
   <distributionManagement>
@@ -64,26 +63,6 @@
         <artifactId>junit-jupiter-engine</artifactId>
         <scope>test</scope>
         <version>${junit.version}</version>
-    </dependency>
-    <dependency>
-        <groupId>org.apache.derby</groupId>
-        <artifactId>derby</artifactId>
-        <version>${derby.version}</version>
-    </dependency>
-    <dependency>
-        <groupId>org.apache.derby</groupId>
-        <artifactId>derbytools</artifactId>
-        <version>${derby.version}</version>
-    </dependency>
-    <dependency>
-        <groupId>org.apache.derby</groupId>
-        <artifactId>derbyshared</artifactId>
-        <version>${derby.version}</version>
-    </dependency>
-    <dependency> 
-        <groupId>org.apache.derby</groupId>
-        <artifactId>derbyclient</artifactId>
-        <version>${derby.version}</version>
     </dependency>
   </dependencies>
 </project>
