@@ -51,7 +51,7 @@ public class CreateRDF {
         String gpmlFile = args[0];
         String gpmlrdfFile  = args[1];
         String wprdfFile  = args[2];
-        int index = gpmlFile.indexOf("WP");
+        int index = gpmlFile.lastIndexOf("WP");
         String localFile = gpmlFile.substring(index);
         String wpid     = localFile.substring(0,localFile.indexOf("."));
 
