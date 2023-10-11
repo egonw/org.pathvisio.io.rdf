@@ -63,10 +63,10 @@ public class Convertor {
 
 	private Resource generatePathwayResource(Pathway pathway, Model model) {
 		String wpId = pathway.getXref().getId();
-		String revision = pathway.getVersion();
+		String revision = Utils.getRevisionFromVersion(wpId, pathway.getVersion());
 
-		Resource pwyRes = model.createResource(Utils.WP_RDF_URL + "/Pathway/" + wpId + "_r" + revision.trim().replaceAll(" ", "_"));
-		pwyRes.addProperty(RDFS.seeAlso, model.createResource("https://www.wikipathways.org/instance/" + wpId + "_r" + revision.trim().replaceAll(" ", "_")));
+		Resource pwyRes = model.createResource(Utils.WP_RDF_URL + "/Pathway/" + wpId + "_r" + revision);
+		pwyRes.addProperty(RDFS.seeAlso, model.createResource("https://www.wikipathways.org/instance/" + wpId + "_r" + revision));
 
 		// FIXME: 
 		//if (tags.contains("Curation:AnalysisCollection")) {

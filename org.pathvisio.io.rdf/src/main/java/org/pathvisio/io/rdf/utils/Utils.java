@@ -112,4 +112,16 @@ public class Utils {
 		IDMapper mapper = BridgeDb.connect("idmapper-pgdb:" + file.getAbsolutePath());
 		return mapper;
 	}
+
+	public static String getRevisionFromVersion(String wpId, String version) {
+		String revision = "0";
+		if (version.startsWith(wpId + "_r")) {
+			// pattern: "WP1028_r125625"
+			revision = version.split("_")[1].substring(1);
+		} else {
+			// example pattern: "20231011"
+			revision = version.trim().replaceAll(" ", "_");
+		}
+		return revision;
+	}
 }

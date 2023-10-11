@@ -67,7 +67,7 @@ public class Convertor {
 
 	private void generateInteractionResources(List<Interaction> interactions, Model model) {
 		String wpId = this.pathway.getPathway().getXref().getId();
-		String revision = this.pathway.getPathway().getVersion().trim().replaceAll(" ", "_");
+		String revision = Utils.getRevisionFromVersion(wpId, pathway.getPathway().getVersion());
 
 		for (Interaction interaction : interactions) {
 			interactionConvertor.convertInteraction(interaction, model, wpId, revision);
@@ -76,7 +76,7 @@ public class Convertor {
 
 	private void generateDataNodeResources(List<DataNode> dataNodes, Model model) {
 		String wpId = this.pathway.getPathway().getXref().getId();
-		String revision = this.pathway.getPathway().getVersion().trim().replaceAll(" ", "_");
+		String revision = Utils.getRevisionFromVersion(wpId, pathway.getPathway().getVersion());
 
 		for (DataNode node : dataNodes) {
 			dataNodeConvertor.convertDataNode(node, model, wpId, revision);
@@ -86,7 +86,7 @@ public class Convertor {
 	private Resource generatePathwayResource(Model model) {
 		Pathway pathway = this.pathway.getPathway();
 		String wpId = pathway.getXref().getId();
-		String revision = pathway.getVersion().trim().replaceAll(" ", "_");
+		String revision = Utils.getRevisionFromVersion(wpId, pathway.getVersion());
 
 		Resource pwyRes = model.createResource(Utils.IDENTIFIERS_ORG_URL + "/wikipathways/" + wpId + "_r" + revision);
 		pwyRes.addProperty(RDF.type, Wp.Pathway);
