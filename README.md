@@ -30,6 +30,13 @@ java -cp target/gpml2rdf-4.0.0-SNAPSHOT.jar org.wikipathways.wp2rdf.CreateGPMLRD
 java -cp target/gpml2rdf-4.0.0-SNAPSHOT.jar org.wikipathways.wp2rdf.CreateWPRDF path/to/WP4297.gpml WP4297.ttl
 ```
 
+### Using ROBOT to find differences
+
+```
+./robot diff --left WP1028.wp.real.ttl --right WP1028.wp.ttl
+```
+
+
 ## Release alpha versions
 
 This code is nowhere close to be replacing the current GPMLRDF, but a 4.0.0 series will
