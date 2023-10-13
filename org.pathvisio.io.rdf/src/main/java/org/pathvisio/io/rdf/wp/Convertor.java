@@ -100,6 +100,16 @@ public class Convertor {
 		pwyRes.addLiteral(Wp.organismName, pathway.getOrganism());
 		pwyRes.addProperty(Wp.isAbout, model.createResource(Utils.WP_RDF_URL + "/Pathway/" + wpId + "_r" + revision));
 		pwyRes.addProperty(FOAF.page, model.createResource("http://www.wikipathways.org/instance/" + wpId + "_r" + revision));
+
+		// image
+		Resource pngRes = model.createResource("https://www.wikipathways.org//wpi/wpi.php?action=downloadFile&type=png&pwTitle=Pathway:" + wpId + "&oldid=r" + revision);
+		pwyRes.addProperty(FOAF.img, pngRes);
+		pngRes.addProperty(RDF.type, FOAF.Image);
+		pngRes.addLiteral(DCTerms.format, "image/png");
+		Resource svgRes = model.createResource("https://www.wikipathways.org//wpi/wpi.php?action=downloadFile&type=svg&pwTitle=Pathway:" + wpId + "&oldid=r" + revision);
+		pwyRes.addProperty(FOAF.img, svgRes);
+		svgRes.addProperty(RDF.type, FOAF.Image);
+		svgRes.addLiteral(DCTerms.format, "image/svg+xml");
  
 		return pwyRes;
 	}

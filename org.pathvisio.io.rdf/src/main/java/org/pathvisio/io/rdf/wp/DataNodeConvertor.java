@@ -137,7 +137,7 @@ public class DataNodeConvertor {
 
 						datanodeRes.addProperty(Wp.isAbout, model.createResource(Utils.WP_RDF_URL + "/Pathway/" + wpId + "_r" + revision + "/DataNode/" + elem.getElementId()));
 						datanodeRes.addLiteral(RDFS.label, elem.getTextLabel().replace("\n", " ").trim());
-						// datanodeRes.addProperty(DCTerms.isPartOf, data.getPathwayRes());
+						datanodeRes.addProperty(DCTerms.isPartOf, convertor.pwyRes);
 					}
 				}
 			}
