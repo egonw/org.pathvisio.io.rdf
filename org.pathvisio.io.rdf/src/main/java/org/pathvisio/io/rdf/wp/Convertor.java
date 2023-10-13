@@ -28,6 +28,7 @@ import org.apache.jena.vocabulary.DC_11;
 import org.apache.jena.vocabulary.RDF;
 import org.apache.jena.vocabulary.SKOS;
 import org.bridgedb.IDMapperStack;
+import org.bridgedb.bio.Organism;
 import org.pathvisio.io.rdf.ontologies.Wp;
 import org.pathvisio.io.rdf.utils.Utils;
 import org.pathvisio.libgpml.model.DataNode;
@@ -97,9 +98,16 @@ public class Convertor {
 		pwyRes.addLiteral(DC_11.title, model.createLiteral(pathway.getTitle(), "en"));
 		if (pathway.getDescription() != null)
 			pwyRes.addLiteral(DCTerms.description, pathway.getDescription());
-		pwyRes.addLiteral(Wp.organismName, pathway.getOrganism());
 		pwyRes.addProperty(Wp.isAbout, model.createResource(Utils.WP_RDF_URL + "/Pathway/" + wpId + "_r" + revision));
 		pwyRes.addProperty(FOAF.page, model.createResource("http://www.wikipathways.org/instance/" + wpId + "_r" + revision));
+
+		// organism info
+		String organism = pathway.getOrganism();
+		String taxonID = Organism.fromLatinName(organism).taxonomyID().getId();
+		pwyRes.addLiteral(Wp.organismName, pathway.getOrganism());
+		Resource organismRes = model.createResource("http://purl.obolibrary.org/obo/NCBITaxon_" + taxonID);
+		pwyRes.addProperty(Wp.organism, organismRes);
+		organismRes.addProperty(model.createProperty("http://purl.obolibrary.org/obo/NCIT_C179773"), taxonID);
 
 		// image
 		Resource pngRes = model.createResource("https://www.wikipathways.org//wpi/wpi.php?action=downloadFile&type=png&pwTitle=Pathway:" + wpId + "&oldid=r" + revision);
