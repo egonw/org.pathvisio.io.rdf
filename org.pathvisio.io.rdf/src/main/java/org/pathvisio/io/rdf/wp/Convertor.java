@@ -17,7 +17,9 @@
 //
 package org.pathvisio.io.rdf.wp;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
@@ -49,9 +51,11 @@ public class Convertor {
 
 	// cached things
 	Resource pwyRes;
+	Map<String, Resource> datanodes;
 
 	public Convertor(PathwayModel pathway) throws Exception {
 		this.pathway = pathway;
+		this.datanodes = new HashMap<>();
 		dataNodeConvertor = new DataNodeConvertor(this, mapper);
 		interactionConvertor = new InteractionConvertor(this, mapper);
 	}

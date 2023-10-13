@@ -15,7 +15,9 @@
 package org.pathvisio.io.rdf.wp;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.Resource;
@@ -24,6 +26,8 @@ import org.apache.jena.vocabulary.RDF;
 import org.bridgedb.IDMapperStack;
 import org.pathvisio.io.rdf.ontologies.Wp;
 import org.pathvisio.io.rdf.utils.Utils;
+import org.pathvisio.libgpml.model.DataNode;
+import org.pathvisio.libgpml.model.GraphLink.LinkableTo;
 import org.pathvisio.libgpml.model.Interaction;
 import org.pathvisio.libgpml.model.LineElement.Anchor;
 import org.pathvisio.libgpml.model.PathwayObject;
@@ -50,6 +54,12 @@ public class InteractionConvertor {
 		this.mapper = mapper;
 	}
 
+	enum types {
+		SOURCE,
+		TARGET,
+		OTHER
+	}
+	
 	/**
 	 * conversion only WP vocabulary
 	 * semantic information about interactions
@@ -93,38 +103,196 @@ public class InteractionConvertor {
 			System.out.println("  line type: " + lt);
 			if (lt == null) {
 				System.out.println("WARNING - different line types in one interaction");
-			} else if (lt.equals(ArrowHeadType.CATALYSIS)) {
-				// will be handled as part of other interactions
 			} else {
 				String url = Utils.WP_RDF_URL + "/Pathway/" + wpId + "_r" + revision
 						+ "/WP/Interaction/" + interaction.getElementId();
 				Resource intRes = model.createResource(url);
-				intRes.addProperty(RDF.type, Wp.Interaction);
-				intRes.addProperty(DCTerms.isPartOf, convertor.pwyRes);
-				addParticipants(intRes, participatingLines);
-				if (lt.equals(ArrowHeadType.DIRECTED)) {
+				String gpmlURL = Utils.WP_RDF_URL + "/Pathway/" + wpId + "_r" + revision
+						+ "/Interaction/" + interaction.getElementId();
+				Resource gpmlRes = model.createResource(gpmlURL);
+				Map<types, List<PathwayObject>> participants = getParticipants(intRes, participatingLines, lt);
+				int nodeCount = participants.get(types.SOURCE).size() +
+					participants.get(types.TARGET).size() + participants.get(types.OTHER).size();
+				System.out.println("  node count: " + nodeCount);
+				if (lt.equals(ArrowHeadType.CATALYSIS)) {
+					if (nodeCount > 1) {
+						intRes.addProperty(RDF.type, Wp.DirectedInteraction);
+						intRes.addProperty(RDF.type, Wp.Catalysis);
+						intRes.addProperty(RDF.type, Wp.Interaction);
+						intRes.addProperty(DCTerms.isPartOf, convertor.pwyRes);
+						intRes.addProperty(Wp.isAbout, gpmlRes);
+						for (PathwayObject node : participants.get(types.SOURCE)) {
+							Resource nodeRes = this.convertor.datanodes.get(node.getElementId());
+							if (nodeRes != null) {
+								intRes.addProperty(Wp.source, nodeRes);
+								intRes.addProperty(Wp.participants, nodeRes);
+								nodeRes.addProperty(DCTerms.isPartOf, intRes);
+							}
+						}
+						for (PathwayObject node : participants.get(types.TARGET)) {
+							Resource nodeRes = this.convertor.datanodes.get(node.getElementId());
+							if (nodeRes != null) {
+								intRes.addProperty(Wp.target, nodeRes);
+								intRes.addProperty(Wp.participants, nodeRes);
+								nodeRes.addProperty(DCTerms.isPartOf, intRes);
+							}
+						}
+						for (PathwayObject node : participants.get(types.OTHER)) {
+							Resource nodeRes = this.convertor.datanodes.get(node.getElementId());
+							if (nodeRes != null) {
+								intRes.addProperty(Wp.participants, nodeRes);
+								nodeRes.addProperty(DCTerms.isPartOf, intRes);
+							}
+						}
+					}
+				} else if (lt.equals(ArrowHeadType.DIRECTED)) {
+					if (nodeCount > 1) {
+						intRes.addProperty(RDF.type, Wp.Interaction);
+						intRes.addProperty(DCTerms.isPartOf, convertor.pwyRes);
+						intRes.addProperty(RDF.type, Wp.DirectedInteraction);
+						intRes.addProperty(Wp.isAbout, gpmlRes);
+						for (PathwayObject node : participants.get(types.SOURCE)) {
+							Resource nodeRes = this.convertor.datanodes.get(node.getElementId());
+							if (nodeRes != null) {
+								intRes.addProperty(Wp.source, nodeRes);
+								intRes.addProperty(Wp.participants, nodeRes);
+								nodeRes.addProperty(DCTerms.isPartOf, intRes);
+							}
+						}
+						for (PathwayObject node : participants.get(types.TARGET)) {
+							Resource nodeRes = this.convertor.datanodes.get(node.getElementId());
+							if (nodeRes != null) {
+								intRes.addProperty(Wp.target, nodeRes);
+								intRes.addProperty(Wp.participants, nodeRes);
+								nodeRes.addProperty(DCTerms.isPartOf, intRes);
+							}
+						}
+						for (PathwayObject node : participants.get(types.OTHER)) {
+							Resource nodeRes = this.convertor.datanodes.get(node.getElementId());
+							if (nodeRes != null) {
+								intRes.addProperty(Wp.participants, nodeRes);
+								nodeRes.addProperty(DCTerms.isPartOf, intRes);
+							}
+						}
+					}
 				} else if (lt.equals(ArrowHeadType.UNDIRECTED)) {
-//					undirected interactions
-//					if(target.size() != 0) {
-//						System.out.println("Problem - undirected with targets should not be there");
-//					} else {
+					if (nodeCount > 1) {
+						intRes.addProperty(RDF.type, Wp.Interaction);
+						intRes.addProperty(DCTerms.isPartOf, convertor.pwyRes);
+						intRes.addProperty(Wp.isAbout, gpmlRes);
+						for (PathwayObject node : participants.get(types.SOURCE)) {
+							Resource nodeRes = this.convertor.datanodes.get(node.getElementId());
+							intRes.addProperty(Wp.participants, nodeRes);
+							nodeRes.addProperty(DCTerms.isPartOf, intRes);
+						}
+						for (PathwayObject node : participants.get(types.TARGET)) {
+							Resource nodeRes = this.convertor.datanodes.get(node.getElementId());
+							intRes.addProperty(Wp.participants, nodeRes);
+							nodeRes.addProperty(DCTerms.isPartOf, intRes);
+						}
+						for (PathwayObject node : participants.get(types.OTHER)) {
+							Resource nodeRes = this.convertor.datanodes.get(node.getElementId());
+							if (nodeRes != null) {
+								intRes.addProperty(Wp.participants, nodeRes);
+								nodeRes.addProperty(DCTerms.isPartOf, intRes);
+							}
+						}
+					}
 				}
 			}
 		}
 	}
 
-	private void addParticipants(Resource intRes, List<Interaction> participatingLines) {
-		List<Resource> source = new ArrayList<Resource>();
-		List<Resource> target = new ArrayList<Resource>();
+	private Map<types, List<PathwayObject>> getParticipants(Resource intRes, List<Interaction> participatingLines, ArrowHeadType overallType) {
+		List<PathwayObject> sources = new ArrayList<>();
+		List<PathwayObject> targets = new ArrayList<>();
+		List<PathwayObject> others = new ArrayList<>();
+		System.out.println("  overall type: " + overallType);
 		for(Interaction interaction : participatingLines) {
-//			System.out.println("Interaction line: " + interaction.getElementId());
-			for (Anchor anchor : interaction.getAnchors()) {
-				PathwayObject pwEle = convertor.pathway.getPathwayObject((anchor.getElementId()));
-//				System.out.println("Object: " + pwEle.getObjectType() + " with ID " + pwEle.getElementId());
+			System.out.println("  line: " + interaction.getElementId());
+			LinkableTo start = interaction.getStartElementRef();
+			if (start != null) {
+				System.out.println("    start: " + start.getElementId());
+				PathwayObject pwObj = convertor.pathway.getPathwayObject(start.getElementId());
+				if (pwObj instanceof DataNode || pwObj instanceof Interaction) {
+					System.out.println("      node: " + pwObj);
+					if (overallType == ArrowHeadType.UNDIRECTED) {
+						System.out.println("      other: " + start.getElementId());
+						// everything is just other
+						others.add(pwObj);
+					} else {
+						if (interaction.getStartArrowHeadType() == ArrowHeadType.UNDIRECTED) {
+							System.out.println("      source: " + start.getElementId());
+							// the node is source
+							sources.add(pwObj);
+						} else {
+							System.out.println("      target: " + start.getElementId());
+							// the node is target
+							targets.add(pwObj);
+						}
+					}
+				}
+			}
+			LinkableTo end = interaction.getEndElementRef();
+			if (end != null) {
+				System.out.println("    end: " + end.getElementId());
+				PathwayObject pwObj = convertor.pathway.getPathwayObject(end.getElementId());
+				System.out.println("      type: " + pwObj.getObjectType());
+				if (pwObj instanceof Anchor) {
+					Interaction targetInternation = getInteractionWithAnchor((Anchor)pwObj);
+					if (targetInternation != null) {
+						System.out.println("      node: " + targetInternation);
+						if (overallType == ArrowHeadType.UNDIRECTED) {
+							System.out.println("      other: " + end.getElementId());
+							// everything is just other
+							others.add(targetInternation);
+						} else {
+							if (interaction.getStartArrowHeadType() == ArrowHeadType.UNDIRECTED) {
+								System.out.println("      target: " + end.getElementId());
+								// the node is target
+								targets.add(targetInternation);
+							} else {
+								System.out.println("      source: " + end.getElementId());
+								// the node is source
+								sources.add(targetInternation);
+							}
+						}
+					}
+				} else if (pwObj instanceof DataNode) {
+					System.out.println("      node: " + pwObj);
+					if (overallType == ArrowHeadType.UNDIRECTED) {
+						System.out.println("      other: " + end.getElementId());
+						// everything is just other
+						others.add(pwObj);
+					} else {
+						if (interaction.getStartArrowHeadType() == ArrowHeadType.UNDIRECTED) {
+							System.out.println("      target: " + end.getElementId());
+							// the node is target
+							targets.add(pwObj);
+						} else {
+							System.out.println("      source: " + end.getElementId());
+							// the node is source
+							sources.add(pwObj);
+						}
+					}
+				}
 			}
 		}
+		Map<types, List<PathwayObject>> participants = new HashMap<>();
+		participants.put(types.SOURCE, sources);
+		participants.put(types.TARGET, targets);
+		participants.put(types.OTHER, others);
+		return participants;
 	}
 
+	// Returns the Interaction of which the given anchor is part.
+	private Interaction getInteractionWithAnchor(Anchor anchor) {
+		for (Interaction interaction : convertor.pathway.getInteractions()) {
+			if (interaction.hasAnchor(anchor)) return interaction;
+		}
+		return null;
+	}
+	
 	// check if line is pointing towards another line - will be handled with baseline
 	private boolean pointingTowardsLine(Interaction interaction) {
 		boolean ignore = false;

@@ -47,6 +47,7 @@ public class DataNodeConvertor {
 	}
 
 	public void convertDataNode(DataNode elem, Model model, String wpId, String revision) {
+		String nodeID = elem.getElementId();
 		Xref xref = elem.getXref();
 		if (validXref(xref)) {
 			if(!elem.getType().equals("Unknown")) {
@@ -87,6 +88,7 @@ public class DataNodeConvertor {
 								datanodeRes.addProperty(DC.identifier, model.createResource(resourceURL));
 							}
 							
+							this.convertor.datanodes.put(nodeID, datanodeRes);
 							datanodeRes.addLiteral(DC.source, xref.getDataSource().getFullName());
 							datanodeRes.addLiteral(DCTerms.identifier, xrefid);
 
