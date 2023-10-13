@@ -24,6 +24,7 @@ import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.vocabulary.DCTerms;
 import org.apache.jena.vocabulary.RDF;
 import org.bridgedb.IDMapperStack;
+import org.bridgedb.Xref;
 import org.pathvisio.io.rdf.ontologies.Wp;
 import org.pathvisio.io.rdf.utils.Utils;
 import org.pathvisio.libgpml.model.DataNode;
@@ -31,6 +32,7 @@ import org.pathvisio.libgpml.model.GraphLink.LinkableTo;
 import org.pathvisio.libgpml.model.Group;
 import org.pathvisio.libgpml.model.Interaction;
 import org.pathvisio.libgpml.model.LineElement.Anchor;
+import org.pathvisio.libgpml.model.PathwayElement.CitationRef;
 import org.pathvisio.libgpml.model.PathwayObject;
 import org.pathvisio.libgpml.model.type.ArrowHeadType;
 import org.pathvisio.libgpml.model.type.ObjectType;
@@ -201,6 +203,16 @@ public class InteractionConvertor {
 						}
 					}
 				}
+
+				// references
+				for (CitationRef ref : interaction.getCitationRefs()) {
+					Xref citationXref = ref.getCitation().getXref();
+					String fullName = citationXref.getDataSource().getFullName();
+					if ("PubMed".equals(fullName) || "DOI".equals(fullName)) {
+						this.convertor.addCitation(model, intRes, citationXref);
+					}
+				}
+
 			}
 		}
 	}

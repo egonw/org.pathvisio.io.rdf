@@ -25,12 +25,15 @@ import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.sparql.vocabulary.FOAF;
+import org.apache.jena.vocabulary.DC;
 import org.apache.jena.vocabulary.DCTerms;
 import org.apache.jena.vocabulary.DC_11;
 import org.apache.jena.vocabulary.RDF;
 import org.apache.jena.vocabulary.SKOS;
 import org.bridgedb.IDMapperStack;
+import org.bridgedb.Xref;
 import org.bridgedb.bio.Organism;
+import org.pathvisio.io.rdf.ontologies.CITO;
 import org.pathvisio.io.rdf.ontologies.Pav;
 import org.pathvisio.io.rdf.ontologies.Wp;
 import org.pathvisio.io.rdf.utils.Utils;
@@ -38,6 +41,7 @@ import org.pathvisio.libgpml.model.Annotation;
 import org.pathvisio.libgpml.model.DataNode;
 import org.pathvisio.libgpml.model.Interaction;
 import org.pathvisio.libgpml.model.Pathway;
+import org.pathvisio.libgpml.model.PathwayElement.CitationRef;
 import org.pathvisio.libgpml.model.PathwayModel;
 
 /**
@@ -130,6 +134,15 @@ public class Convertor {
 			}
 		}
 
+		// references
+		for (CitationRef ref : pathway.getCitationRefs()) {
+			Xref citationXref = ref.getCitation().getXref();
+			String fullName = citationXref.getDataSource().getFullName();
+			if ("PubMed".equals(fullName) || "DOI".equals(fullName)) {
+				addCitation(model, pwyRes, citationXref);
+			}
+		}
+
 		// image
 		Resource pngRes = model.createResource("https://www.wikipathways.org//wpi/wpi.php?action=downloadFile&type=png&pwTitle=Pathway:" + wpId + "&oldid=r" + revision);
 		pwyRes.addProperty(FOAF.img, pngRes);
@@ -141,6 +154,23 @@ public class Convertor {
 		svgRes.addLiteral(DCTerms.format, "image/svg+xml");
  
 		return pwyRes;
+	}
+
+	protected void addCitation(Model model, Resource pwyRes, Xref citationXref) {
+		String fullName = citationXref.getDataSource().getFullName();
+		if ("PubMed".equals(fullName)) {
+			String pmid = citationXref.getId().trim();
+			try {
+				Integer.parseInt(pmid);
+				Resource pmResource = model.createResource(Utils.IDENTIFIERS_ORG_URL + "/pubmed/" + pmid);
+				pmResource.addProperty(RDF.type, Wp.PublicationReference);
+				pmResource.addProperty(DC.source, fullName);
+				pmResource.addLiteral(DCTerms.identifier, pmid);
+				pmResource.addProperty(FOAF.page, model.createResource("http://www.ncbi.nlm.nih.gov/pubmed/" + pmid));
+				pwyRes.addProperty(DCTerms.references, pmResource);
+				pwyRes.addProperty(CITO.cites, pmResource);
+			} catch (Exception e) {} // not an integer
+		}
 	}
 
 }

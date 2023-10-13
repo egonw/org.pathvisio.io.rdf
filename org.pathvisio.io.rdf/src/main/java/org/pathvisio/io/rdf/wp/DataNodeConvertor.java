@@ -27,6 +27,7 @@ import org.bridgedb.Xref;
 import org.pathvisio.io.rdf.ontologies.Wp;
 import org.pathvisio.io.rdf.utils.Utils;
 import org.pathvisio.libgpml.model.DataNode;
+import org.pathvisio.libgpml.model.PathwayElement.CitationRef;
 
 public class DataNodeConvertor {
 
@@ -132,10 +133,15 @@ public class DataNodeConvertor {
 							Resource foafResource = model.createResource(foafURL);
 							datanodeRes.addProperty(FOAF.page, foafResource);
 						}
-						// TODO: what to do about those - are they pathway specific?
-						// for(PublicationXref pubXref : elem.getBiopaxReferenceManager().getPublicationXRefs()) {
-						//	PublicationXrefConverter.parsePublicationXrefWp(pubXref, datanodeRes, data.getPathwayRes(), model, mapper);
-						// }
+
+						// references
+						for (CitationRef ref : elem.getCitationRefs()) {
+							Xref citationXref = ref.getCitation().getXref();
+							String fullName = citationXref.getDataSource().getFullName();
+							if ("PubMed".equals(fullName) || "DOI".equals(fullName)) {
+								this.convertor.addCitation(model, datanodeRes, citationXref);
+							}
+						}
 
 						datanodeRes.addProperty(Wp.isAbout, model.createResource(Utils.WP_RDF_URL + "/Pathway/" + wpId + "_r" + revision + "/DataNode/" + elem.getElementId()));
 						datanodeRes.addLiteral(RDFS.label, elem.getTextLabel().replace("\n", " ").trim());
@@ -145,5 +151,5 @@ public class DataNodeConvertor {
 			}
 		}
 	}
-	
+
 }
