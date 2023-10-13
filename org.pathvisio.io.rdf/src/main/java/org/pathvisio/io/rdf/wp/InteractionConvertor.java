@@ -149,12 +149,24 @@ public class InteractionConvertor {
 							}
 						}
 					}
-				} else if (lt.equals(ArrowHeadType.DIRECTED)) {
+				} else if (lt.equals(ArrowHeadType.BINDING) ||
+						   lt.equals(ArrowHeadType.CONVERSION) ||
+						   lt.equals(ArrowHeadType.DIRECTED) ||
+						   lt.equals(ArrowHeadType.INHIBITION) ||
+						   lt.equals(ArrowHeadType.STIMULATION) ||
+						   lt.equals(ArrowHeadType.TRANSLOCATION) ||
+						   lt.equals(ArrowHeadType.TRANSCRIPTION_TRANSLATION)) {
 					if (datanodeCount > 0) {
 						intRes.addProperty(RDF.type, Wp.Interaction);
 						intRes.addProperty(DCTerms.isPartOf, convertor.pwyRes);
 						intRes.addProperty(RDF.type, Wp.DirectedInteraction);
 						intRes.addProperty(Wp.isAbout, gpmlRes);
+						if (lt.equals(ArrowHeadType.BINDING)) intRes.addProperty(RDF.type, Wp.Binding);
+						if (lt.equals(ArrowHeadType.CONVERSION)) intRes.addProperty(RDF.type, Wp.Conversion);
+						if (lt.equals(ArrowHeadType.INHIBITION)) intRes.addProperty(RDF.type, Wp.Inhibition);
+						if (lt.equals(ArrowHeadType.STIMULATION)) intRes.addProperty(RDF.type, Wp.Stimulation);
+						if (lt.equals(ArrowHeadType.TRANSLOCATION)) intRes.addProperty(RDF.type, Wp.Translocation);
+						if (lt.equals(ArrowHeadType.TRANSCRIPTION_TRANSLATION)) intRes.addProperty(RDF.type, Wp.TranscriptionTranslation);
 						for (PathwayObject node : participants.get(types.SOURCE)) {
 							Resource nodeRes = getResourceForID(model, wpId, revision, node.getElementId());
 							if (nodeRes != null) {
