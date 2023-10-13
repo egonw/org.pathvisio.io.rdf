@@ -19,6 +19,7 @@ import java.util.List;
 
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.Resource;
+import org.apache.jena.vocabulary.DCTerms;
 import org.apache.jena.vocabulary.RDF;
 import org.bridgedb.IDMapperStack;
 import org.pathvisio.io.rdf.ontologies.Wp;
@@ -54,13 +55,16 @@ public class InteractionConvertor {
 	 * semantic information about interactions
 	 */
 	public void convertInteraction(Interaction interaction, Model model, String wpId, String revision) {
-		boolean ignore = pointingTowardsLine(interaction);
-		if(!ignore) {
+		System.out.println("Interaction: " + interaction.getElementId());
+		if(pointingTowardsLine(interaction)) {
+			System.out.println("pointing towards line. ignoring this interaction");
+		} else {
 			List<Interaction> participatingLines = new ArrayList<Interaction>();
 			participatingLines.add(interaction);
 			List<Interaction> regLines = new ArrayList<Interaction>();
 			
 			for (Anchor a : interaction.getAnchors()) {
+				System.out.println("  anchor: " + a.getElementId());
 				for (Interaction currLine : this.convertor.pathway.getInteractions()) {
 					if (currLine.getObjectType().equals(ObjectType.INTERACTION)) {
 						if (currLine.getStartElementRef() != null) {
@@ -86,22 +90,38 @@ public class InteractionConvertor {
 			}
 
 			ArrowHeadType lt = getInteractionType(participatingLines);
-			if(lt == null) {
+			System.out.println("  line type: " + lt);
+			if (lt == null) {
 				System.out.println("WARNING - different line types in one interaction");
-			} else if (lt.equals(ArrowHeadType.UNDIRECTED)) {
-//				undirected interactions
-//				if(target.size() != 0) {
-//					System.out.println("Problem - undirected with targets should not be there");
-//				} else {
-					String url = Utils.WP_RDF_URL + "/Pathway/" +
-							wpId + "_r" + revision
-							+ "/WP/Interaction/" + interaction.getElementId();
-					Resource intRes = model.createResource(url);
-					intRes.addProperty(RDF.type, Wp.Interaction);
-					//				intRes.addProperty(DCTerms.isPartOf, data.getPathwayRes());
-//				}
+			} else if (lt.equals(ArrowHeadType.CATALYSIS)) {
+				// will be handled as part of other interactions
+			} else {
+				String url = Utils.WP_RDF_URL + "/Pathway/" + wpId + "_r" + revision
+						+ "/WP/Interaction/" + interaction.getElementId();
+				Resource intRes = model.createResource(url);
+				intRes.addProperty(RDF.type, Wp.Interaction);
+				intRes.addProperty(DCTerms.isPartOf, convertor.pwyRes);
+				addParticipants(intRes, participatingLines);
+				if (lt.equals(ArrowHeadType.DIRECTED)) {
+				} else if (lt.equals(ArrowHeadType.UNDIRECTED)) {
+//					undirected interactions
+//					if(target.size() != 0) {
+//						System.out.println("Problem - undirected with targets should not be there");
+//					} else {
+				}
 			}
+		}
+	}
 
+	private void addParticipants(Resource intRes, List<Interaction> participatingLines) {
+		List<Resource> source = new ArrayList<Resource>();
+		List<Resource> target = new ArrayList<Resource>();
+		for(Interaction interaction : participatingLines) {
+//			System.out.println("Interaction line: " + interaction.getElementId());
+			for (Anchor anchor : interaction.getAnchors()) {
+				PathwayObject pwEle = convertor.pathway.getPathwayObject((anchor.getElementId()));
+//				System.out.println("Object: " + pwEle.getObjectType() + " with ID " + pwEle.getElementId());
+			}
 		}
 	}
 
