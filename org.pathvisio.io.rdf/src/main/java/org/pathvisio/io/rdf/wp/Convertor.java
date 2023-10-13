@@ -39,6 +39,7 @@ import org.pathvisio.io.rdf.ontologies.Wp;
 import org.pathvisio.io.rdf.utils.Utils;
 import org.pathvisio.libgpml.model.Annotation;
 import org.pathvisio.libgpml.model.DataNode;
+import org.pathvisio.libgpml.model.Group;
 import org.pathvisio.libgpml.model.Interaction;
 import org.pathvisio.libgpml.model.Pathway;
 import org.pathvisio.libgpml.model.PathwayElement.CitationRef;
@@ -52,6 +53,7 @@ public class Convertor {
 	PathwayModel pathway;
 	DataNodeConvertor dataNodeConvertor;
 	InteractionConvertor interactionConvertor;
+	GroupConvertor groupConvertor;
 	IDMapperStack mapper;
 
 	// cached things
@@ -63,6 +65,7 @@ public class Convertor {
 		this.datanodes = new HashMap<>();
 		dataNodeConvertor = new DataNodeConvertor(this, mapper);
 		interactionConvertor = new InteractionConvertor(this, mapper);
+		groupConvertor = new GroupConvertor(this);
 	}
 
 	public Model asRDF() {
@@ -72,8 +75,18 @@ public class Convertor {
 		pwyRes = generatePathwayResource(model);
 		generateDataNodeResources(pathway.getDataNodes(), model);
 		generateInteractionResources(pathway.getInteractions(), model);
+		generateGroupResources(pathway.getGroups(), model);
 		
 		return model;
+	}
+
+	private void generateGroupResources(List<Group> groups, Model model) {
+		String wpId = this.pathway.getPathway().getXref().getId();
+		String revision = Utils.getRevisionFromVersion(wpId, pathway.getPathway().getVersion());
+
+		for (Group group : groups) {
+			groupConvertor.convertGroup(group, model, wpId, revision);
+		}
 	}
 
 	private void generateInteractionResources(List<Interaction> interactions, Model model) {
@@ -156,7 +169,7 @@ public class Convertor {
 		return pwyRes;
 	}
 
-	protected void addCitation(Model model, Resource pwyRes, Xref citationXref) {
+	protected void addCitation(Model model, Resource resource, Xref citationXref) {
 		String fullName = citationXref.getDataSource().getFullName();
 		if ("PubMed".equals(fullName)) {
 			String pmid = citationXref.getId().trim();
@@ -167,8 +180,9 @@ public class Convertor {
 				pmResource.addProperty(DC.source, fullName);
 				pmResource.addLiteral(DCTerms.identifier, pmid);
 				pmResource.addProperty(FOAF.page, model.createResource("http://www.ncbi.nlm.nih.gov/pubmed/" + pmid));
-				pwyRes.addProperty(DCTerms.references, pmResource);
-				pwyRes.addProperty(CITO.cites, pmResource);
+				resource.addProperty(DCTerms.references, pmResource);
+				resource.addProperty(CITO.cites, pmResource);
+				this.pwyRes.addProperty(CITO.cites, pmResource);
 			} catch (Exception e) {} // not an integer
 		}
 	}
