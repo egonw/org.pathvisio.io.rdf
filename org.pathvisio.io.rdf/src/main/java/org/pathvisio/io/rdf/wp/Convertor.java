@@ -34,6 +34,7 @@ import org.bridgedb.bio.Organism;
 import org.pathvisio.io.rdf.ontologies.Pav;
 import org.pathvisio.io.rdf.ontologies.Wp;
 import org.pathvisio.io.rdf.utils.Utils;
+import org.pathvisio.libgpml.model.Annotation;
 import org.pathvisio.libgpml.model.DataNode;
 import org.pathvisio.libgpml.model.Interaction;
 import org.pathvisio.libgpml.model.Pathway;
@@ -115,6 +116,19 @@ public class Convertor {
 		Resource organismRes = model.createResource("http://purl.obolibrary.org/obo/NCBITaxon_" + taxonID);
 		pwyRes.addProperty(Wp.organism, organismRes);
 		organismRes.addProperty(model.createProperty("http://purl.obolibrary.org/obo/NCIT_C179773"), taxonID);
+
+		// ontology tags
+		for (Annotation annot : this.pathway.getAnnotations()) {
+			String ontoTag = annot.getXref().getDataSource().getSystemCode() + "_" + annot.getXref().getId();
+			pwyRes.addProperty(Wp.ontologyTag, model.createResource(Utils.PURL_OBO_LIB + ontoTag));
+			if (ontoTag.contains("PW_")) {
+				pwyRes.addProperty(Wp.pathwayOntologyTag, model.createResource(Utils.PURL_OBO_LIB + ontoTag));
+			} else if (ontoTag.contains("DOID_")) {
+				pwyRes.addProperty(Wp.diseaseOntologyTag, model.createResource(Utils.PURL_OBO_LIB + ontoTag));
+			} else if (ontoTag.contains("CL_")) {
+				pwyRes.addProperty(Wp.cellTypeOntologyTag, model.createResource(Utils.PURL_OBO_LIB + ontoTag));
+			}
+		}
 
 		// image
 		Resource pngRes = model.createResource("https://www.wikipathways.org//wpi/wpi.php?action=downloadFile&type=png&pwTitle=Pathway:" + wpId + "&oldid=r" + revision);
