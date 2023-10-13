@@ -34,7 +34,7 @@ public class ConvertorTest {
 		model.setNsPrefix("xsd", "http://www.w3.org/2001/XMLSchema#");
 		ByteArrayOutputStream output = new ByteArrayOutputStream();
 		model.write(output, "TURTLE");
-		System.out.println(new String(output.toByteArray()));
+		// System.out.println(new String(output.toByteArray()));
 	}
 	
 }

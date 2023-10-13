@@ -66,7 +66,7 @@ public class InteractionConvertor {
 	 * semantic information about interactions
 	 */
 	public void convertInteraction(Interaction interaction, Model model, String wpId, String revision) {
-		System.out.println("Interaction: " + interaction.getElementId());
+		// System.out.println("Interaction: " + interaction.getElementId());
 		if(pointingTowardsLine(interaction)) {
 			System.out.println("pointing towards line. ignoring this interaction");
 		} else {
@@ -75,7 +75,7 @@ public class InteractionConvertor {
 			List<Interaction> regLines = new ArrayList<Interaction>();
 			
 			for (Anchor a : interaction.getAnchors()) {
-				System.out.println("  anchor: " + a.getElementId());
+				// System.out.println("  anchor: " + a.getElementId());
 				for (Interaction currLine : this.convertor.pathway.getInteractions()) {
 					if (currLine.getObjectType().equals(ObjectType.INTERACTION)) {
 						if (currLine.getStartElementRef() != null) {
@@ -101,7 +101,7 @@ public class InteractionConvertor {
 			}
 
 			ArrowHeadType lt = getInteractionType(participatingLines);
-			System.out.println("  line type: " + lt);
+			// System.out.println("  line type: " + lt);
 			if (lt == null) {
 				System.out.println("WARNING - different line types in one interaction");
 			} else {
@@ -111,9 +111,9 @@ public class InteractionConvertor {
 				Resource gpmlRes = model.createResource(gpmlURL);
 				Map<types, List<PathwayObject>> participants = getParticipants(intRes, participatingLines, lt);
 				int datanodeCount = getDataNodeCount(participants, ObjectType.DATANODE);
-				System.out.println("  node count: " + datanodeCount);
+				// System.out.println("  node count: " + datanodeCount);
 				int groupCount = getDataNodeCount(participants, ObjectType.GROUP);
-				System.out.println("  group count: " + groupCount);
+				// System.out.println("  group count: " + groupCount);
 				if (groupCount > 0) {
 					// totally unsupported at this moment
 				} else if (lt.equals(ArrowHeadType.CATALYSIS)) {
@@ -238,27 +238,27 @@ public class InteractionConvertor {
 		List<PathwayObject> sources = new ArrayList<>();
 		List<PathwayObject> targets = new ArrayList<>();
 		List<PathwayObject> others = new ArrayList<>();
-		System.out.println("  overall type: " + overallType);
+		// System.out.println("  overall type: " + overallType);
 		for(Interaction interaction : participatingLines) {
-			System.out.println("  line: " + interaction.getElementId());
+			// System.out.println("  line: " + interaction.getElementId());
 			LinkableTo start = interaction.getStartElementRef();
 			if (start != null) {
-				System.out.println("    start: " + start.getElementId());
+				// System.out.println("    start: " + start.getElementId());
 				PathwayObject pwObj = convertor.pathway.getPathwayObject(start.getElementId());
-				System.out.println("      type: " + pwObj.getObjectType());
+				// System.out.println("      type: " + pwObj.getObjectType());
 				if (pwObj instanceof Group || pwObj instanceof DataNode || pwObj instanceof Interaction) {
-					System.out.println("      node: " + pwObj);
+					// System.out.println("      node: " + pwObj);
 					if (overallType == ArrowHeadType.UNDIRECTED) {
-						System.out.println("      other: " + start.getElementId());
+						// System.out.println("      other: " + start.getElementId());
 						// everything is just other
 						others.add(pwObj);
 					} else {
 						if (interaction.getStartArrowHeadType() == ArrowHeadType.UNDIRECTED) {
-							System.out.println("      source: " + start.getElementId());
+							// System.out.println("      source: " + start.getElementId());
 							// the node is source
 							sources.add(pwObj);
 						} else {
-							System.out.println("      target: " + start.getElementId());
+							// System.out.println("      target: " + start.getElementId());
 							// the node is target
 							targets.add(pwObj);
 						}
@@ -267,42 +267,42 @@ public class InteractionConvertor {
 			}
 			LinkableTo end = interaction.getEndElementRef();
 			if (end != null) {
-				System.out.println("    end: " + end.getElementId());
+				// System.out.println("    end: " + end.getElementId());
 				PathwayObject pwObj = convertor.pathway.getPathwayObject(end.getElementId());
-				System.out.println("      type: " + pwObj.getObjectType());
+				// System.out.println("      type: " + pwObj.getObjectType());
 				if (pwObj instanceof Anchor) {
 					Interaction targetInternation = getInteractionWithAnchor((Anchor)pwObj);
 					if (targetInternation != null) {
-						System.out.println("      node: " + targetInternation);
+						// System.out.println("      node: " + targetInternation);
 						if (overallType == ArrowHeadType.UNDIRECTED) {
-							System.out.println("      other: " + end.getElementId());
+							// System.out.println("      other: " + end.getElementId());
 							// everything is just other
 							others.add(targetInternation);
 						} else {
 							if (interaction.getStartArrowHeadType() == ArrowHeadType.UNDIRECTED) {
-								System.out.println("      target: " + end.getElementId());
+								// System.out.println("      target: " + end.getElementId());
 								// the node is target
 								targets.add(targetInternation);
 							} else {
-								System.out.println("      source: " + end.getElementId());
+								// System.out.println("      source: " + end.getElementId());
 								// the node is source
 								sources.add(targetInternation);
 							}
 						}
 					}
 				} else if (pwObj instanceof Group || pwObj instanceof DataNode || pwObj instanceof Interaction) {
-					System.out.println("      node: " + pwObj);
+					// System.out.println("      node: " + pwObj);
 					if (overallType == ArrowHeadType.UNDIRECTED) {
-						System.out.println("      other: " + end.getElementId());
+						// System.out.println("      other: " + end.getElementId());
 						// everything is just other
 						others.add(pwObj);
 					} else {
 						if (interaction.getStartArrowHeadType() == ArrowHeadType.UNDIRECTED) {
-							System.out.println("      target: " + end.getElementId());
+							// System.out.println("      target: " + end.getElementId());
 							// the node is target
 							targets.add(pwObj);
 						} else {
-							System.out.println("      source: " + end.getElementId());
+							// System.out.println("      source: " + end.getElementId());
 							// the node is source
 							sources.add(pwObj);
 						}
