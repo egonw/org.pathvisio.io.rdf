@@ -28,6 +28,7 @@ import org.pathvisio.io.rdf.ontologies.Wp;
 import org.pathvisio.io.rdf.utils.Utils;
 import org.pathvisio.libgpml.model.DataNode;
 import org.pathvisio.libgpml.model.GraphLink.LinkableTo;
+import org.pathvisio.libgpml.model.Group;
 import org.pathvisio.libgpml.model.Interaction;
 import org.pathvisio.libgpml.model.LineElement.Anchor;
 import org.pathvisio.libgpml.model.PathwayObject;
@@ -104,9 +105,7 @@ public class InteractionConvertor {
 			if (lt == null) {
 				System.out.println("WARNING - different line types in one interaction");
 			} else {
-				String url = Utils.WP_RDF_URL + "/Pathway/" + wpId + "_r" + revision
-						+ "/WP/Interaction/" + interaction.getElementId();
-				Resource intRes = model.createResource(url);
+				Resource intRes = createResource(model, wpId, revision, interaction);
 				String gpmlURL = Utils.WP_RDF_URL + "/Pathway/" + wpId + "_r" + revision
 						+ "/Interaction/" + interaction.getElementId();
 				Resource gpmlRes = model.createResource(gpmlURL);
@@ -122,7 +121,7 @@ public class InteractionConvertor {
 						intRes.addProperty(DCTerms.isPartOf, convertor.pwyRes);
 						intRes.addProperty(Wp.isAbout, gpmlRes);
 						for (PathwayObject node : participants.get(types.SOURCE)) {
-							Resource nodeRes = this.convertor.datanodes.get(node.getElementId());
+							Resource nodeRes = getResourceForID(model, wpId, revision, node.getElementId());
 							if (nodeRes != null) {
 								intRes.addProperty(Wp.source, nodeRes);
 								intRes.addProperty(Wp.participants, nodeRes);
@@ -130,7 +129,7 @@ public class InteractionConvertor {
 							}
 						}
 						for (PathwayObject node : participants.get(types.TARGET)) {
-							Resource nodeRes = this.convertor.datanodes.get(node.getElementId());
+							Resource nodeRes = getResourceForID(model, wpId, revision, node.getElementId());
 							if (nodeRes != null) {
 								intRes.addProperty(Wp.target, nodeRes);
 								intRes.addProperty(Wp.participants, nodeRes);
@@ -138,7 +137,7 @@ public class InteractionConvertor {
 							}
 						}
 						for (PathwayObject node : participants.get(types.OTHER)) {
-							Resource nodeRes = this.convertor.datanodes.get(node.getElementId());
+							Resource nodeRes = getResourceForID(model, wpId, revision, node.getElementId());
 							if (nodeRes != null) {
 								intRes.addProperty(Wp.participants, nodeRes);
 								nodeRes.addProperty(DCTerms.isPartOf, intRes);
@@ -152,7 +151,7 @@ public class InteractionConvertor {
 						intRes.addProperty(RDF.type, Wp.DirectedInteraction);
 						intRes.addProperty(Wp.isAbout, gpmlRes);
 						for (PathwayObject node : participants.get(types.SOURCE)) {
-							Resource nodeRes = this.convertor.datanodes.get(node.getElementId());
+							Resource nodeRes = getResourceForID(model, wpId, revision, node.getElementId());
 							if (nodeRes != null) {
 								intRes.addProperty(Wp.source, nodeRes);
 								intRes.addProperty(Wp.participants, nodeRes);
@@ -160,7 +159,7 @@ public class InteractionConvertor {
 							}
 						}
 						for (PathwayObject node : participants.get(types.TARGET)) {
-							Resource nodeRes = this.convertor.datanodes.get(node.getElementId());
+							Resource nodeRes = getResourceForID(model, wpId, revision, node.getElementId());
 							if (nodeRes != null) {
 								intRes.addProperty(Wp.target, nodeRes);
 								intRes.addProperty(Wp.participants, nodeRes);
@@ -168,7 +167,7 @@ public class InteractionConvertor {
 							}
 						}
 						for (PathwayObject node : participants.get(types.OTHER)) {
-							Resource nodeRes = this.convertor.datanodes.get(node.getElementId());
+							Resource nodeRes = getResourceForID(model, wpId, revision, node.getElementId());
 							if (nodeRes != null) {
 								intRes.addProperty(Wp.participants, nodeRes);
 								nodeRes.addProperty(DCTerms.isPartOf, intRes);
@@ -181,17 +180,17 @@ public class InteractionConvertor {
 						intRes.addProperty(DCTerms.isPartOf, convertor.pwyRes);
 						intRes.addProperty(Wp.isAbout, gpmlRes);
 						for (PathwayObject node : participants.get(types.SOURCE)) {
-							Resource nodeRes = this.convertor.datanodes.get(node.getElementId());
+							Resource nodeRes = getResourceForID(model, wpId, revision, node.getElementId());
 							intRes.addProperty(Wp.participants, nodeRes);
 							nodeRes.addProperty(DCTerms.isPartOf, intRes);
 						}
 						for (PathwayObject node : participants.get(types.TARGET)) {
-							Resource nodeRes = this.convertor.datanodes.get(node.getElementId());
+							Resource nodeRes = getResourceForID(model, wpId, revision, node.getElementId());
 							intRes.addProperty(Wp.participants, nodeRes);
 							nodeRes.addProperty(DCTerms.isPartOf, intRes);
 						}
 						for (PathwayObject node : participants.get(types.OTHER)) {
-							Resource nodeRes = this.convertor.datanodes.get(node.getElementId());
+							Resource nodeRes = getResourceForID(model, wpId, revision, node.getElementId());
 							if (nodeRes != null) {
 								intRes.addProperty(Wp.participants, nodeRes);
 								nodeRes.addProperty(DCTerms.isPartOf, intRes);
@@ -201,6 +200,24 @@ public class InteractionConvertor {
 				}
 			}
 		}
+	}
+
+	private Resource createResource(Model model, String wpId, String revision, Interaction interaction) {
+		String url = Utils.WP_RDF_URL + "/Pathway/" + wpId + "_r" + revision
+				+ "/WP/Interaction/" + interaction.getElementId();
+		return model.createResource(url);
+	}
+
+	private Resource getResourceForID(Model model, String wpId, String revision, String elementId) {
+		Resource res = this.convertor.datanodes.get(elementId);
+		if (res != null) return res;
+		// maybe an interaction?
+		for (Interaction interaction : convertor.pathway.getInteractions()) {
+			if (interaction.getElementId().equals(elementId)) {
+				return createResource(model, wpId, revision, interaction);
+			}
+		}
+		return null;
 	}
 
 	private Map<types, List<PathwayObject>> getParticipants(Resource intRes, List<Interaction> participatingLines, ArrowHeadType overallType) {
@@ -214,7 +231,9 @@ public class InteractionConvertor {
 			if (start != null) {
 				System.out.println("    start: " + start.getElementId());
 				PathwayObject pwObj = convertor.pathway.getPathwayObject(start.getElementId());
-				if (pwObj instanceof DataNode || pwObj instanceof Interaction) {
+				if (pwObj instanceof Group) {
+					// ignore
+			    } else if (pwObj instanceof DataNode || pwObj instanceof Interaction) {
 					System.out.println("      node: " + pwObj);
 					if (overallType == ArrowHeadType.UNDIRECTED) {
 						System.out.println("      other: " + start.getElementId());
@@ -238,7 +257,9 @@ public class InteractionConvertor {
 				System.out.println("    end: " + end.getElementId());
 				PathwayObject pwObj = convertor.pathway.getPathwayObject(end.getElementId());
 				System.out.println("      type: " + pwObj.getObjectType());
-				if (pwObj instanceof Anchor) {
+				if (pwObj instanceof Group) {
+					// ignore
+			    } else if (pwObj instanceof Anchor) {
 					Interaction targetInternation = getInteractionWithAnchor((Anchor)pwObj);
 					if (targetInternation != null) {
 						System.out.println("      node: " + targetInternation);
