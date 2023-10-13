@@ -110,11 +110,14 @@ public class InteractionConvertor {
 						+ "/Interaction/" + interaction.getElementId();
 				Resource gpmlRes = model.createResource(gpmlURL);
 				Map<types, List<PathwayObject>> participants = getParticipants(intRes, participatingLines, lt);
-				int nodeCount = participants.get(types.SOURCE).size() +
-					participants.get(types.TARGET).size() + participants.get(types.OTHER).size();
-				System.out.println("  node count: " + nodeCount);
-				if (lt.equals(ArrowHeadType.CATALYSIS)) {
-					if (nodeCount > 1) {
+				int datanodeCount = getDataNodeCount(participants, ObjectType.DATANODE);
+				System.out.println("  node count: " + datanodeCount);
+				int groupCount = getDataNodeCount(participants, ObjectType.GROUP);
+				System.out.println("  group count: " + groupCount);
+				if (groupCount > 0) {
+					// totally unsupported at this moment
+				} else if (lt.equals(ArrowHeadType.CATALYSIS)) {
+					if (datanodeCount > 0) {
 						intRes.addProperty(RDF.type, Wp.DirectedInteraction);
 						intRes.addProperty(RDF.type, Wp.Catalysis);
 						intRes.addProperty(RDF.type, Wp.Interaction);
@@ -145,7 +148,7 @@ public class InteractionConvertor {
 						}
 					}
 				} else if (lt.equals(ArrowHeadType.DIRECTED)) {
-					if (nodeCount > 1) {
+					if (datanodeCount > 0) {
 						intRes.addProperty(RDF.type, Wp.Interaction);
 						intRes.addProperty(DCTerms.isPartOf, convertor.pwyRes);
 						intRes.addProperty(RDF.type, Wp.DirectedInteraction);
@@ -175,7 +178,7 @@ public class InteractionConvertor {
 						}
 					}
 				} else if (lt.equals(ArrowHeadType.UNDIRECTED)) {
-					if (nodeCount > 1) {
+					if (datanodeCount > 0) {
 						intRes.addProperty(RDF.type, Wp.Interaction);
 						intRes.addProperty(DCTerms.isPartOf, convertor.pwyRes);
 						intRes.addProperty(Wp.isAbout, gpmlRes);
@@ -200,6 +203,17 @@ public class InteractionConvertor {
 				}
 			}
 		}
+	}
+
+	private int getDataNodeCount(Map<types, List<PathwayObject>> participants, ObjectType objectType) {
+		int count = 0;
+		for (PathwayObject node : participants.get(types.SOURCE))
+			if (node.getObjectType() == objectType) count++; 
+		for (PathwayObject node : participants.get(types.TARGET))
+			if (node.getObjectType() == objectType) count++;
+		for (PathwayObject node : participants.get(types.OTHER))
+			if (node.getObjectType() == objectType) count++;
+		return count;
 	}
 
 	private Resource createResource(Model model, String wpId, String revision, Interaction interaction) {
@@ -231,9 +245,8 @@ public class InteractionConvertor {
 			if (start != null) {
 				System.out.println("    start: " + start.getElementId());
 				PathwayObject pwObj = convertor.pathway.getPathwayObject(start.getElementId());
-				if (pwObj instanceof Group) {
-					// ignore
-			    } else if (pwObj instanceof DataNode || pwObj instanceof Interaction) {
+				System.out.println("      type: " + pwObj.getObjectType());
+				if (pwObj instanceof Group || pwObj instanceof DataNode || pwObj instanceof Interaction) {
 					System.out.println("      node: " + pwObj);
 					if (overallType == ArrowHeadType.UNDIRECTED) {
 						System.out.println("      other: " + start.getElementId());
@@ -257,9 +270,7 @@ public class InteractionConvertor {
 				System.out.println("    end: " + end.getElementId());
 				PathwayObject pwObj = convertor.pathway.getPathwayObject(end.getElementId());
 				System.out.println("      type: " + pwObj.getObjectType());
-				if (pwObj instanceof Group) {
-					// ignore
-			    } else if (pwObj instanceof Anchor) {
+				if (pwObj instanceof Anchor) {
 					Interaction targetInternation = getInteractionWithAnchor((Anchor)pwObj);
 					if (targetInternation != null) {
 						System.out.println("      node: " + targetInternation);
@@ -279,7 +290,7 @@ public class InteractionConvertor {
 							}
 						}
 					}
-				} else if (pwObj instanceof DataNode) {
+				} else if (pwObj instanceof Group || pwObj instanceof DataNode || pwObj instanceof Interaction) {
 					System.out.println("      node: " + pwObj);
 					if (overallType == ArrowHeadType.UNDIRECTED) {
 						System.out.println("      other: " + end.getElementId());
