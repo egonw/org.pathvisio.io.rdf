@@ -29,6 +29,7 @@ import org.apache.jena.vocabulary.RDF;
 import org.apache.jena.vocabulary.SKOS;
 import org.bridgedb.IDMapperStack;
 import org.bridgedb.bio.Organism;
+import org.pathvisio.io.rdf.ontologies.Pav;
 import org.pathvisio.io.rdf.ontologies.Wp;
 import org.pathvisio.io.rdf.utils.Utils;
 import org.pathvisio.libgpml.model.DataNode;
@@ -90,6 +91,8 @@ public class Convertor {
 		String revision = Utils.getRevisionFromVersion(wpId, pathway.getVersion());
 
 		Resource pwyRes = model.createResource(Utils.IDENTIFIERS_ORG_URL + "/wikipathways/" + wpId + "_r" + revision);
+		Resource pwyConceptRes = model.createResource(Utils.IDENTIFIERS_ORG_URL + "/wikipathways/" + wpId);
+		pwyConceptRes.addProperty(Pav.hasVersion, pwyRes);
 		pwyRes.addProperty(RDF.type, Wp.Pathway);
 		pwyRes.addProperty(RDF.type, SKOS.Collection);
 		pwyRes.addProperty(DC_11.identifier, model.createResource(Utils.IDENTIFIERS_ORG_URL + "/wikipathways/" + wpId));
