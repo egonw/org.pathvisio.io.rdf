@@ -180,6 +180,7 @@ public class Convertor {
 				pmResource.addProperty(DC.source, fullName);
 				pmResource.addLiteral(DCTerms.identifier, pmid);
 				pmResource.addProperty(FOAF.page, model.createResource("http://www.ncbi.nlm.nih.gov/pubmed/" + pmid));
+				pmResource.addProperty(DCTerms.isPartOf, resource);
 				resource.addProperty(DCTerms.references, pmResource);
 				resource.addProperty(CITO.cites, pmResource);
 				this.pwyRes.addProperty(CITO.cites, pmResource);

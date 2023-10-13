@@ -116,6 +116,7 @@ public class InteractionConvertor {
 				// System.out.println("  node count: " + datanodeCount);
 				int groupCount = getDataNodeCount(participants, ObjectType.GROUP);
 				// System.out.println("  group count: " + groupCount);
+				boolean addReferences = false;
 				if (groupCount > 0) {
 					// totally unsupported at this moment
 				} else if (lt.equals(ArrowHeadType.CATALYSIS)) {
@@ -131,6 +132,7 @@ public class InteractionConvertor {
 								intRes.addProperty(Wp.source, nodeRes);
 								intRes.addProperty(Wp.participants, nodeRes);
 								nodeRes.addProperty(DCTerms.isPartOf, intRes);
+								addReferences = true;
 							}
 						}
 						for (PathwayObject node : participants.get(types.TARGET)) {
@@ -139,6 +141,7 @@ public class InteractionConvertor {
 								intRes.addProperty(Wp.target, nodeRes);
 								intRes.addProperty(Wp.participants, nodeRes);
 								nodeRes.addProperty(DCTerms.isPartOf, intRes);
+								addReferences = true;
 							}
 						}
 						for (PathwayObject node : participants.get(types.OTHER)) {
@@ -146,6 +149,7 @@ public class InteractionConvertor {
 							if (nodeRes != null) {
 								intRes.addProperty(Wp.participants, nodeRes);
 								nodeRes.addProperty(DCTerms.isPartOf, intRes);
+								addReferences = true;
 							}
 						}
 					}
@@ -173,6 +177,7 @@ public class InteractionConvertor {
 								intRes.addProperty(Wp.source, nodeRes);
 								intRes.addProperty(Wp.participants, nodeRes);
 								nodeRes.addProperty(DCTerms.isPartOf, intRes);
+								addReferences = true;
 							}
 						}
 						for (PathwayObject node : participants.get(types.TARGET)) {
@@ -181,6 +186,7 @@ public class InteractionConvertor {
 								intRes.addProperty(Wp.target, nodeRes);
 								intRes.addProperty(Wp.participants, nodeRes);
 								nodeRes.addProperty(DCTerms.isPartOf, intRes);
+								addReferences = true;
 							}
 						}
 						for (PathwayObject node : participants.get(types.OTHER)) {
@@ -188,6 +194,7 @@ public class InteractionConvertor {
 							if (nodeRes != null) {
 								intRes.addProperty(Wp.participants, nodeRes);
 								nodeRes.addProperty(DCTerms.isPartOf, intRes);
+								addReferences = true;
 							}
 						}
 					}
@@ -200,31 +207,35 @@ public class InteractionConvertor {
 							Resource nodeRes = getResourceForID(model, wpId, revision, node.getElementId());
 							intRes.addProperty(Wp.participants, nodeRes);
 							nodeRes.addProperty(DCTerms.isPartOf, intRes);
+							addReferences = true;
 						}
 						for (PathwayObject node : participants.get(types.TARGET)) {
 							Resource nodeRes = getResourceForID(model, wpId, revision, node.getElementId());
 							intRes.addProperty(Wp.participants, nodeRes);
 							nodeRes.addProperty(DCTerms.isPartOf, intRes);
+							addReferences = true;
 						}
 						for (PathwayObject node : participants.get(types.OTHER)) {
 							Resource nodeRes = getResourceForID(model, wpId, revision, node.getElementId());
 							if (nodeRes != null) {
 								intRes.addProperty(Wp.participants, nodeRes);
 								nodeRes.addProperty(DCTerms.isPartOf, intRes);
+								addReferences = true;
 							}
 						}
 					}
 				}
 
 				// references
-				for (CitationRef ref : interaction.getCitationRefs()) {
-					Xref citationXref = ref.getCitation().getXref();
-					String fullName = citationXref.getDataSource().getFullName();
-					if ("PubMed".equals(fullName) || "DOI".equals(fullName)) {
-						this.convertor.addCitation(model, intRes, citationXref);
+				if (addReferences) {
+					for (CitationRef ref : interaction.getCitationRefs()) {
+						Xref citationXref = ref.getCitation().getXref();
+						String fullName = citationXref.getDataSource().getFullName();
+						if ("PubMed".equals(fullName) || "DOI".equals(fullName)) {
+							this.convertor.addCitation(model, intRes, citationXref);
+						}
 					}
 				}
-
 			}
 		}
 	}
