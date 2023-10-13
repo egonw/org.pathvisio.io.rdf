@@ -137,6 +137,8 @@ public class Convertor {
 		// ontology tags
 		for (Annotation annot : this.pathway.getAnnotations()) {
 			String ontoTag = annot.getXref().getDataSource().getSystemCode() + "_" + annot.getXref().getId();
+			ontoTag = ontoTag.replace("Do_", "DOID_");
+			ontoTag = ontoTag.replace("cl_", "CL_");
 			pwyRes.addProperty(Wp.ontologyTag, model.createResource(Utils.PURL_OBO_LIB + ontoTag));
 			if (ontoTag.contains("PW_")) {
 				pwyRes.addProperty(Wp.pathwayOntologyTag, model.createResource(Utils.PURL_OBO_LIB + ontoTag));
