@@ -24,18 +24,21 @@ import org.bridgedb.Xref;
 import org.pathvisio.io.rdf.ontologies.Gpml;
 import org.pathvisio.io.rdf.utils.Utils;
 import org.pathvisio.libgpml.model.DataNode;
+import org.pathvisio.libgpml.model.PathwayElement.Comment;
 import org.pathvisio.libgpml.model.type.LineStyleType;
 
 public class DataNodeConvertor {
 
 	IDMapperStack mapper;
 	Convertor convertor;
+	CommentConvertor commentConvertor;
 	
 	protected DataNodeConvertor(Convertor convertor) {
 		this(convertor, null);
 	}
 	
 	protected DataNodeConvertor(Convertor convertor, IDMapperStack mapper) {
+		this.commentConvertor = new CommentConvertor(convertor);
 		this.convertor = convertor;
 		this.mapper = mapper;
 	}
@@ -63,16 +66,26 @@ public class DataNodeConvertor {
 		datanodeRes.addLiteral(Gpml.FILL_COLOR, Utils.colorToHex(elem.getFillColor()));
 		datanodeRes.addLiteral(Gpml.ZORDER, elem.getZOrder());
 		datanodeRes.addLiteral(Gpml.CENTER_X, elem.getCenterX());
-		datanodeRes.addLiteral(Gpml.CENTER_Y, elem.getCenterX());
+		datanodeRes.addLiteral(Gpml.CENTER_Y, elem.getCenterY());
 		datanodeRes.addLiteral(Gpml.HEIGHT, elem.getHeight());
 		datanodeRes.addLiteral(Gpml.WIDTH, elem.getWidth());
+		datanodeRes.addLiteral(Gpml.ALIGN, elem.getHAlign().getName());
 		datanodeRes.addLiteral(Gpml.VALIGN, elem.getVAlign().getName());
 		datanodeRes.addLiteral(Gpml.LINE_STYLE, elem.getBorderStyle() != LineStyleType.DASHED ? "Solid" : "Broken");
+		datanodeRes.addLiteral(Gpml.LINE_THICKNESS, elem.getBorderWidth());
 		datanodeRes.addLiteral(Gpml.TEXTLABEL, elem.getTextLabel());
+		if (elem.getShapeType() != null)
+			datanodeRes.addLiteral(Gpml.SHAPE_TYPE, elem.getShapeType().getName());
+		datanodeRes.addLiteral(Gpml.TYPE, elem.getType().getName());
+		datanodeRes.addLiteral(Gpml.COLOR, Utils.colorToHex(elem.getTextColor()));
 
 		if(elem.getXref() != null && elem.getXref().getId() != null && elem.getXref().getDataSource() != null) {
 			datanodeRes.addLiteral(Gpml.XREF_ID, elem.getXref().getId());
 			datanodeRes.addLiteral(Gpml.XREF_DATASOURCE, elem.getXref().getDataSource().getFullName());
+		}
+
+		for(Comment c : elem.getComments()) {
+			commentConvertor.parseCommentGpml(c, model, datanodeRes);
 		}
 	}
 
