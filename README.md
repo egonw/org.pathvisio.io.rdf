@@ -33,7 +33,6 @@ java -cp target/gpml2rdf-4.0.0-SNAPSHOT.jar org.wikipathways.wp2rdf.CreateWPRDF 
 Or generate them in one go with:
 
 ```
-cd org.wikipathways.rdf
 java -cp org.wikipathways.rdf/target/gpml2rdf-4.0.3.jar org.wikipathways.wp2rdf.CreateRDF WP1028.gpml WP1028.gpml.ttl WP1028.wp.ttl
 ```
 
