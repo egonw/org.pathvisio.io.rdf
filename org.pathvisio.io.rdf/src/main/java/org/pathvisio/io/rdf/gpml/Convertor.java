@@ -18,6 +18,7 @@
 package org.pathvisio.io.rdf.gpml;
 
 import java.util.List;
+import java.util.Map;
 
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
@@ -36,12 +37,15 @@ import org.pathvisio.libgpml.model.PathwayModel;
 public class Convertor {
 
 	PathwayModel pathway;
+	DataNodeConvertor dataNodeConvertor;
 
 	// cached things
 	Resource pwyRes;
+	Map<String, Resource> datanodes;
 
 	public Convertor(PathwayModel pathway) {
 		this.pathway = pathway;
+		dataNodeConvertor = new DataNodeConvertor(this);
 	}
 
 	public Convertor(PathwayModel pathway, IDMapperStack mapper) {
@@ -59,6 +63,12 @@ public class Convertor {
 	}
 
 	private void generateDataNodeResources(List<DataNode> dataNodes, Model model) {
+		String wpId = this.pathway.getPathway().getXref().getId();
+		String revision = Utils.getRevisionFromVersion(wpId, pathway.getPathway().getVersion());
+
+		for (DataNode node : dataNodes) {
+			dataNodeConvertor.convertDataNode(node, model, wpId, revision);
+		}
 	}
 
 	private Resource generatePathwayResource(Pathway pathway, Model model) {
