@@ -17,12 +17,14 @@ package org.pathvisio.io.rdf.gpml;
 
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.Resource;
+import org.apache.jena.vocabulary.DCTerms;
 import org.apache.jena.vocabulary.RDF;
 import org.bridgedb.IDMapperStack;
 import org.bridgedb.Xref;
 import org.pathvisio.io.rdf.ontologies.Gpml;
 import org.pathvisio.io.rdf.utils.Utils;
 import org.pathvisio.libgpml.model.DataNode;
+import org.pathvisio.libgpml.model.type.LineStyleType;
 
 public class DataNodeConvertor {
 
@@ -43,20 +45,35 @@ public class DataNodeConvertor {
 	}
 
 	public void convertDataNode(DataNode elem, Model model, String wpId, String revision) {
-		String pwResURI = "http://rdf.wikipathways.org/Pathway/" + wpId + "_rr" + revision; 
+		String pwResURI = "http://rdf.wikipathways.org/Pathway/" + wpId + "_r" + revision; 
 		Resource datanodeRes = model.createResource(pwResURI + "/DataNode/" + 
 		    (elem.getElementId() != null ? elem.getElementId() : elem.hashCode()));
 		datanodeRes.addProperty(RDF.type, Gpml.DATA_NODE);
+		datanodeRes.addProperty(DCTerms.isPartOf, convertor.pwyRes);
+		convertor.pwyRes.addProperty(Gpml.HAS_DATA_NODE, datanodeRes);
 
 		datanodeRes.addLiteral(Gpml.FONT_STYLE, elem.getFontStyle() ? "Italic" : "Normal");
 		datanodeRes.addLiteral(Gpml.FONT_SIZE, elem.getFontSize());
 		datanodeRes.addLiteral(Gpml.FONT_NAME, elem.getFontName());
+		datanodeRes.addLiteral(Gpml.FONT_WEIGHT, elem.getFontWeight() ? "Bold" : "Normal");
+		datanodeRes.addLiteral(Gpml.FONT_DECORATION, elem.getFontDecoration() ? "Underline" : "Normal");
+		datanodeRes.addLiteral(Gpml.FONT_STRIKETHRU, elem.getFontStrikethru() ? "Strikethru" : "Normal");
 		datanodeRes.addLiteral(Gpml.GRAPH_ID, elem.getElementId() != null ? elem.getElementId() : "");
 		if(elem.getGroupRef() != null) datanodeRes.addLiteral(Gpml.GROUP_REF, elem.getGroupRef());
-		datanodeRes.addLiteral(Gpml.FONT_WEIGHT, elem.getFontWeight() ? "Bold" : "Normal");
 		datanodeRes.addLiteral(Gpml.FILL_COLOR, Utils.colorToHex(elem.getFillColor()));
 		datanodeRes.addLiteral(Gpml.ZORDER, elem.getZOrder());
+		datanodeRes.addLiteral(Gpml.CENTER_X, elem.getCenterX());
+		datanodeRes.addLiteral(Gpml.CENTER_Y, elem.getCenterX());
+		datanodeRes.addLiteral(Gpml.HEIGHT, elem.getHeight());
+		datanodeRes.addLiteral(Gpml.WIDTH, elem.getWidth());
+		datanodeRes.addLiteral(Gpml.VALIGN, elem.getVAlign().getName());
+		datanodeRes.addLiteral(Gpml.LINE_STYLE, elem.getBorderStyle() != LineStyleType.DASHED ? "Solid" : "Broken");
+		datanodeRes.addLiteral(Gpml.TEXTLABEL, elem.getTextLabel());
 
+		if(elem.getXref() != null && elem.getXref().getId() != null && elem.getXref().getDataSource() != null) {
+			datanodeRes.addLiteral(Gpml.XREF_ID, elem.getXref().getId());
+			datanodeRes.addLiteral(Gpml.XREF_DATASOURCE, elem.getXref().getDataSource().getFullName());
+		}
 	}
 
 }
