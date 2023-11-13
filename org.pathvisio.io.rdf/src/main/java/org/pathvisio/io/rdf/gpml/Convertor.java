@@ -28,6 +28,7 @@ import org.bridgedb.IDMapperStack;
 import org.pathvisio.io.rdf.ontologies.Gpml;
 import org.pathvisio.io.rdf.utils.Utils;
 import org.pathvisio.libgpml.model.DataNode;
+import org.pathvisio.libgpml.model.Interaction;
 import org.pathvisio.libgpml.model.Label;
 import org.pathvisio.libgpml.model.Pathway;
 import org.pathvisio.libgpml.model.PathwayModel;
@@ -40,6 +41,7 @@ public class Convertor {
 	PathwayModel pathway;
 	DataNodeConvertor dataNodeConvertor;
 	LabelConvertor labelConvertor;
+	InteractionConvertor interactionConvertor;
 
 	// cached things
 	Resource pwyRes;
@@ -49,6 +51,7 @@ public class Convertor {
 		this.pathway = pathway;
 		dataNodeConvertor = new DataNodeConvertor(this);
 		labelConvertor = new LabelConvertor(this);
+		interactionConvertor = new InteractionConvertor(this);
 	}
 
 	public Convertor(PathwayModel pathway, IDMapperStack mapper) {
@@ -62,8 +65,18 @@ public class Convertor {
 		pwyRes = generatePathwayResource(pathway.getPathway(), model);
 		generateDataNodeResources(pathway.getDataNodes(), model);
 		generateLabelResources(pathway.getLabels(), model);
+		generateInteractionResources(pathway.getInteractions(), model);
 		
 		return model;
+	}
+
+	private void generateInteractionResources(List<Interaction> interactions, Model model) {
+		String wpId = this.pathway.getPathway().getXref().getId();
+		String revision = Utils.getRevisionFromVersion(wpId, pathway.getPathway().getVersion());
+
+		for (Interaction interaction : interactions) {
+			interactionConvertor.convertInteraction(interaction, model, wpId, revision);
+		}
 	}
 
 	private void generateLabelResources(List<Label> labels, Model model) {
