@@ -62,7 +62,7 @@ public class DataNodeConvertor {
 		datanodeRes.addLiteral(Gpml.FONT_DECORATION, elem.getFontDecoration() ? "Underline" : "Normal");
 		datanodeRes.addLiteral(Gpml.FONT_STRIKETHRU, elem.getFontStrikethru() ? "Strikethru" : "Normal");
 		datanodeRes.addLiteral(Gpml.GRAPH_ID, elem.getElementId() != null ? elem.getElementId() : "");
-		if(elem.getGroupRef() != null) datanodeRes.addLiteral(Gpml.GROUP_REF, elem.getGroupRef());
+		if(elem.getGroupRef() != null) datanodeRes.addLiteral(Gpml.GROUP_REF, elem.getGroupRef().getElementId());
 		datanodeRes.addLiteral(Gpml.FILL_COLOR, Utils.colorToHex(elem.getFillColor()));
 		datanodeRes.addLiteral(Gpml.ZORDER, elem.getZOrder());
 		datanodeRes.addLiteral(Gpml.CENTER_X, elem.getCenterX());
