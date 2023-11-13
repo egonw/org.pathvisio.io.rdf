@@ -21,6 +21,7 @@ import org.apache.jena.vocabulary.DCTerms;
 import org.apache.jena.vocabulary.RDF;
 import org.pathvisio.io.rdf.ontologies.Gpml;
 import org.pathvisio.libgpml.model.Interaction;
+import org.pathvisio.libgpml.model.LineElement.LinePoint;
 import org.pathvisio.libgpml.model.PathwayElement.Comment;
 import org.pathvisio.libgpml.model.type.LineStyleType;
 
@@ -28,9 +29,11 @@ public class InteractionConvertor {
 
 	Convertor convertor;
 	CommentConvertor commentConvertor;
+	PointConvertor pointConvertor;
 
 	protected InteractionConvertor(Convertor convertor) {
 		this.commentConvertor = new CommentConvertor(convertor);
+		this.pointConvertor = new PointConvertor(convertor);
 		this.convertor = convertor;
 	}
 
@@ -51,6 +54,16 @@ public class InteractionConvertor {
 		if(interaction.getXref() != null && interaction.getXref().getId() != null && interaction.getXref().getDataSource() != null) {
 			intRes.addLiteral(Gpml.XREF_ID, interaction.getXref().getId());
 			intRes.addLiteral(Gpml.XREF_DATASOURCE, interaction.getXref().getDataSource().getFullName());
+		}
+
+		for(LinePoint p : interaction.getLinePoints()) {
+			if(p.equals(interaction.getStartLinePoint())) {
+				pointConvertor.convertPoint(p, model, intRes, wpId, revision, interaction.getStartArrowHeadType().getName());
+			} else if (p.equals(interaction.getEndLinePoint())) {
+				pointConvertor.convertPoint(p, model, intRes, wpId, revision, interaction.getEndArrowHeadType().getName());
+			} else {
+				pointConvertor.convertPoint(p, model, intRes, wpId, revision, null);
+			}
 		}
 
 		for(Comment c : interaction.getComments()) {
