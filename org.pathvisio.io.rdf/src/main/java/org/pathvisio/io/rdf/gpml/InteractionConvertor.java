@@ -21,6 +21,7 @@ import org.apache.jena.vocabulary.DCTerms;
 import org.apache.jena.vocabulary.RDF;
 import org.pathvisio.io.rdf.ontologies.Gpml;
 import org.pathvisio.libgpml.model.Interaction;
+import org.pathvisio.libgpml.model.LineElement.Anchor;
 import org.pathvisio.libgpml.model.LineElement.LinePoint;
 import org.pathvisio.libgpml.model.PathwayElement.Comment;
 import org.pathvisio.libgpml.model.type.LineStyleType;
@@ -30,10 +31,12 @@ public class InteractionConvertor {
 	Convertor convertor;
 	CommentConvertor commentConvertor;
 	PointConvertor pointConvertor;
+	AnchorConvertor anchorConvertor;
 
 	protected InteractionConvertor(Convertor convertor) {
 		this.commentConvertor = new CommentConvertor(convertor);
 		this.pointConvertor = new PointConvertor(convertor);
+		this.anchorConvertor = new AnchorConvertor(convertor);
 		this.convertor = convertor;
 	}
 
@@ -54,6 +57,10 @@ public class InteractionConvertor {
 		if(interaction.getXref() != null && interaction.getXref().getId() != null && interaction.getXref().getDataSource() != null) {
 			intRes.addLiteral(Gpml.XREF_ID, interaction.getXref().getId());
 			intRes.addLiteral(Gpml.XREF_DATASOURCE, interaction.getXref().getDataSource().getFullName());
+		}
+
+		for(Anchor a : interaction.getAnchors()) {
+			anchorConvertor.convertAnchor(a, model, intRes, wpId, revision);
 		}
 
 		for(LinePoint p : interaction.getLinePoints()) {
