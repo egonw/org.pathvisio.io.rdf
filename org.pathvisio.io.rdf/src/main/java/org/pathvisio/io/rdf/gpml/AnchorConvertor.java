@@ -37,7 +37,11 @@ public class AnchorConvertor {
 		anchorRes.addProperty(RDF.type, Gpml.ANCHOR);
 		anchorRes.addProperty(DCTerms.isPartOf, intRes);
 		anchorRes.addProperty(DCTerms.isPartOf, convertor.pwyRes);
-		
+
+		anchorRes.addLiteral(Gpml.GRAPH_ID, anchor.getElementId());
+		anchorRes.addLiteral(Gpml.POSITION, anchor.getPosition());
+		anchorRes.addLiteral(Gpml.SHAPE, anchor.getShapeType().getName());
+
 		intRes.addProperty(Gpml.HAS_ANCHOR, anchorRes);
 	}
 
