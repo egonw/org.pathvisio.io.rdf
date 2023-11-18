@@ -28,8 +28,10 @@ import org.bridgedb.IDMapperStack;
 import org.pathvisio.io.rdf.ontologies.Gpml;
 import org.pathvisio.io.rdf.utils.Utils;
 import org.pathvisio.libgpml.model.DataNode;
+import org.pathvisio.libgpml.model.Group;
 import org.pathvisio.libgpml.model.Interaction;
 import org.pathvisio.libgpml.model.Label;
+import org.pathvisio.libgpml.model.LineElement.Anchor;
 import org.pathvisio.libgpml.model.Pathway;
 import org.pathvisio.libgpml.model.PathwayModel;
 
@@ -42,6 +44,7 @@ public class Convertor {
 	DataNodeConvertor dataNodeConvertor;
 	LabelConvertor labelConvertor;
 	InteractionConvertor interactionConvertor;
+	GroupConvertor groupConvertor;
 
 	// cached things
 	Resource pwyRes;
@@ -52,6 +55,7 @@ public class Convertor {
 		dataNodeConvertor = new DataNodeConvertor(this);
 		labelConvertor = new LabelConvertor(this);
 		interactionConvertor = new InteractionConvertor(this);
+		groupConvertor = new GroupConvertor(this);
 	}
 
 	public Convertor(PathwayModel pathway, IDMapperStack mapper) {
@@ -66,8 +70,18 @@ public class Convertor {
 		generateDataNodeResources(pathway.getDataNodes(), model);
 		generateLabelResources(pathway.getLabels(), model);
 		generateInteractionResources(pathway.getInteractions(), model);
+		generateGroupResources(pathway.getGroups(), model);
 		
 		return model;
+	}
+
+	private void generateGroupResources(List<Group> groups, Model model) {
+		String wpId = this.pathway.getPathway().getXref().getId();
+		String revision = Utils.getRevisionFromVersion(wpId, pathway.getPathway().getVersion());
+
+		for (Group group : groups) {
+			groupConvertor.convertGroup(group, model, wpId, revision);
+		}
 	}
 
 	private void generateInteractionResources(List<Interaction> interactions, Model model) {
