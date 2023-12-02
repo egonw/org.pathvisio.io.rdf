@@ -33,9 +33,6 @@ public class GroupConvertor {
 	}
 
 	public void convertGroup(Group group, Model model, String wpId, String revision) {
-		System.out.println("Group: " + group);
-		System.out.println("  " + group.getElementId());
-		System.out.println("  " + group.getGroupRef());
 		if (group.getGroupRef() != null) System.out.println("  " + group.getGroupRef().getElementId());
 		String graphId = group.getElementId();
 		Resource groupRes = model.createResource(convertor.pwyRes.getURI() + "/Group/" + graphId);
