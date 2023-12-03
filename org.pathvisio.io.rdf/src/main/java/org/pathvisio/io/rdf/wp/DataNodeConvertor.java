@@ -53,13 +53,13 @@ public class DataNodeConvertor {
 		if (validXref(xref)) {
 			if(!elem.getType().equals("Unknown")) {
 				if (xref.getId() != null && elem.getXref().getId().trim().length() > 0) {
-					String xrefid = xref.getId(); 
+					String xrefid = xref.getId();
 					DataSource datasource = xref.getDataSource(); 
 					String url = datasource.getIdentifiersOrgUri(xrefid);
 					if (url != null) url = url.replace("http://identifiers", "https://identifiers");
 					String foafURL = null;
 					if (datasource.getKnownUrl(xrefid) != null) {
-						foafURL = datasource.getKnownUrl(xrefid).replaceAll(" ", "_");
+						foafURL = datasource.getKnownUrl(xrefid).replaceAll(" ", "_").replaceAll("\t", "");
 					}
 					if ("HMDB".equals(xref.getDataSource().getFullName())) {
 						if (xrefid.length() == 11) {
