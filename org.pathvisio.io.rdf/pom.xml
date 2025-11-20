@@ -4,7 +4,7 @@
   <groupId>org.pathvisio</groupId>
   <artifactId>org.pathvisio.io.rdf</artifactId>
   <packaging>jar</packaging>
-  <version>4.0.3</version>
+  <version>4.0.4-SNAPSHOT</version>
   <name>org.pathvisio.io.rdf</name>
 
   <properties>
@@ -13,7 +13,7 @@
     <maven.compiler.target>11</maven.compiler.target>
     <jena.version>4.10.0</jena.version>
     <junit.version>5.10.1</junit.version>
-    <libgpml.version>4.0.3</libgpml.version>
+    <libgpml.version>4.0.4-SNAPSHOT</libgpml.version>
   </properties>
 
   <distributionManagement>
