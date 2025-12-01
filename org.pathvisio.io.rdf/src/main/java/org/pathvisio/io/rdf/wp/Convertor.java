@@ -126,9 +126,25 @@ public class Convertor {
 		pwyRes.addProperty(Wp.isAbout, model.createResource(Utils.WP_RDF_URL + "/Pathway/" + wpId + "_r" + revision));
 		pwyRes.addProperty(FOAF.page, model.createResource("http://www.wikipathways.org/instance/" + wpId + "_r" + revision));
 
+		Map<String,String> others = new HashMap<>();
+		others.put("Physcomitrium patens","3218");
+		others.put("Ocimum basilicum", "1753");
+		others.put("Ulva curvata", "135247");
+		others.put("Papaver somniferum", "3469");
+		others.put("Triglochin maritima", "55501");
+		others.put("Phaseolus vulgaris", "3885");
+		others.put("Petunia x hybrida", "4102");
+		others.put("Erythroxylum coca", "289672");
+		others.put("Agapanthus africanus", "51501");
+		others.put("Artemisia annua", "35608");
+		others.put("", "");
+
 		// organism info
 		String organism = pathway.getOrganism();
-		String taxonID = Organism.fromLatinName(organism).taxonomyID().getId();
+		String taxonID = Organism.fromLatinName(organism) != null ?
+			Organism.fromLatinName(organism).taxonomyID().getId() :
+			others.get(organism);
+		if (taxonID == null) taxonID = "131567"; // cellular organisms
 		pwyRes.addLiteral(Wp.organismName, pathway.getOrganism());
 		Resource organismRes = model.createResource("http://purl.obolibrary.org/obo/NCBITaxon_" + taxonID);
 		pwyRes.addProperty(Wp.organism, organismRes);
