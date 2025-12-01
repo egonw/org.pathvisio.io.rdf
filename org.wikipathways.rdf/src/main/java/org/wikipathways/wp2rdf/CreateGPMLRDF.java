@@ -78,6 +78,7 @@ public class CreateGPMLRDF {
 			output.close();
 		} catch (Exception exception) {
 			// skip
+			System.out.println("Error while creating RDF for " + wpid + ": " + exception.getMessage());
 		}
 	}
 	
