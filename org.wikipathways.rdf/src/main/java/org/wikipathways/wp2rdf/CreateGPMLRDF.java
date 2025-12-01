@@ -41,15 +41,17 @@ public class CreateGPMLRDF {
 		CommandLineParser parser = new DefaultParser();
 		CommandLine cmd = parser.parse(options, args);
 		
-		if (cmd.hasOption("h") || args.length < 2) {
+		if (cmd.hasOption("h") || args.length < 3) {
 			HelpFormatter formatter = new HelpFormatter();
-			formatter.printHelp("CreateGPMLRDF [GPML] [RDF]", options);
+			formatter.printHelp("CreateGPMLRDF [GPML] [RDF] [VERSION]", options);
 			System.exit(0);
 		}
 
         String gpmlFile = args[0];
         String outFile  = args[1];
+        String version  = args[2];
         int index = gpmlFile.indexOf("WP");
+        if (index == -1 ) index = gpmlFile.indexOf("PC");
         String localFile = gpmlFile.substring(index);
         String wpid     = localFile.substring(2,localFile.indexOf("."));
 
@@ -63,16 +65,20 @@ public class CreateGPMLRDF {
 		pathway.getPathway().setXref(new Xref(wpid, wpSource));
 
 		// convert the content
-		Model model = new Convertor(pathway).asRDF();
+		try {
+			Model model = new Convertor(pathway).asRDF();
 
-		// serialize RDF
-		model.setNsPrefix("gpml", "http://vocabularies.wikipathways.org/gpml#");
-		model.setNsPrefix("rdfs", "http://www.w3.org/2000/01/rdf-schema#");
-		model.setNsPrefix("xsd", "http://www.w3.org/2001/XMLSchema#");
-		FileOutputStream output = new FileOutputStream(outFile);
-		model.write(output, "TURTLE");
-        output.flush();
-        output.close();
+			// serialize RDF
+			model.setNsPrefix("gpml", "http://vocabularies.wikipathways.org/gpml#");
+			model.setNsPrefix("rdfs", "http://www.w3.org/2000/01/rdf-schema#");
+			model.setNsPrefix("xsd", "http://www.w3.org/2001/XMLSchema#");
+			FileOutputStream output = new FileOutputStream(outFile);
+			model.write(output, "TURTLE");
+			output.flush();
+			output.close();
+		} catch (Exception exception) {
+			// skip
+		}
 	}
 	
 }
