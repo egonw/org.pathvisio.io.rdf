@@ -1,5 +1,5 @@
 // Copyright 2015 BiGCaT Bioinformatics
-//           2023 Egon Willighagen <egon.willighagen@gmail.com>
+//           2023-2025 Egon Willighagen <egon.willighagen@gmail.com>
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -38,14 +38,17 @@ import org.pathvisio.libgpml.model.type.ObjectType;
  * 
  * @author mkutmon
  * @author ryanmiller
+ * @author egonw
  *
  */
 public class GroupConvertor {
 
+	String domainName;
 	Convertor convertor;
 	
-	protected GroupConvertor(Convertor convertor) {
+	protected GroupConvertor(Convertor convertor, String domainName) {
 		this.convertor = convertor;
+		this.domainName = domainName;
 	}
 
 	/**
@@ -73,19 +76,19 @@ public class GroupConvertor {
 			// TODO: what about complexes with only one data node?
 			if(participants.size() > 1) {
 				String graphId = group.getElementId();
-				Resource groupRes = model.createResource(Utils.WP_RDF_URL + "/Pathway/" + wpId + "_r" + revision + "/Complex/" + graphId);
+				Resource groupRes = model.createResource(this.domainName + "/Pathway/" + wpId + "_r" + revision + "/Complex/" + graphId);
 				groupRes.addProperty(RDF.type, Wp.DataNode);
 				groupRes.addProperty(RDF.type, Wp.Complex);
-				groupRes.addProperty(Wp.isAbout, model.createResource(Utils.WP_RDF_URL + "/Pathway/" + wpId + "_r" + revision + "/Group/" + graphId));
+				groupRes.addProperty(Wp.isAbout, model.createResource(this.domainName + "/Pathway/" + wpId + "_r" + revision + "/Group/" + graphId));
 				groupRes.addProperty(DCTerms.isPartOf, this.convertor.pwyRes);
 				if(group.getTextLabel() != null && !group.getTextLabel().equals("")) groupRes.addLiteral(RDFS.label, group.getTextLabel().replace("\n", " "));
 
-				Resource complexBinding = model.createResource(Utils.WP_RDF_URL + "/Pathway/" + wpId + "_r" + revision + "/ComplexBinding/" + graphId);
+				Resource complexBinding = model.createResource(this.domainName + "/Pathway/" + wpId + "_r" + revision + "/ComplexBinding/" + graphId);
 				complexBinding.addProperty(RDF.type, Wp.Interaction);
 				complexBinding.addProperty(RDF.type, Wp.Binding);
 				complexBinding.addProperty(RDF.type, Wp.ComplexBinding);
 				complexBinding.addProperty(Wp.participants, groupRes);
-				complexBinding.addProperty(Wp.isAbout, model.createResource(Utils.WP_RDF_URL + "/Pathway/" + wpId + "_r" + revision + "/Group/" + graphId));
+				complexBinding.addProperty(Wp.isAbout, model.createResource(this.domainName + "/Pathway/" + wpId + "_r" + revision + "/Group/" + graphId));
 				complexBinding.addProperty(DCTerms.isPartOf, this.convertor.pwyRes);
 				
 				for(Resource r : participants) {

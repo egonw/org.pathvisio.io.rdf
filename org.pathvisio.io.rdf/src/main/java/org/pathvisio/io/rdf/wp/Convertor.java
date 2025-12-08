@@ -1,5 +1,5 @@
 // Copyright (c) 2015 BiGCaT Bioinformatics
-//               2022 Egon Willighagen <egon.willighagen@gmail.com>
+//               2022-2025 Egon Willighagen <egon.willighagen@gmail.com>
 // 
 // Conversion from GPML pathways to RDF
 // 
@@ -57,15 +57,20 @@ public class Convertor {
 	IDMapperStack mapper;
 
 	// cached things
+	String domainName;
 	Resource pwyRes;
 	Map<String, Resource> datanodes;
 
 	public Convertor(PathwayModel pathway) throws Exception {
+		this(pathway, Utils.WP_RDF_URL);
+	}
+	public Convertor(PathwayModel pathway, String domainName) throws Exception {
 		this.pathway = pathway;
+		this.domainName = domainName;
 		this.datanodes = new HashMap<>();
-		dataNodeConvertor = new DataNodeConvertor(this, mapper);
-		interactionConvertor = new InteractionConvertor(this, mapper);
-		groupConvertor = new GroupConvertor(this);
+		dataNodeConvertor = new DataNodeConvertor(this, domainName, mapper);
+		interactionConvertor = new InteractionConvertor(this, domainName, mapper);
+		groupConvertor = new GroupConvertor(this, domainName);
 	}
 
 	public Model asRDF() {
@@ -123,7 +128,7 @@ public class Convertor {
 		pwyRes.addLiteral(DC_11.title, model.createLiteral(pathway.getTitle(), "en"));
 		if (pathway.getDescription() != null)
 			pwyRes.addLiteral(DCTerms.description, pathway.getDescription());
-		pwyRes.addProperty(Wp.isAbout, model.createResource(Utils.WP_RDF_URL + "/Pathway/" + wpId + "_r" + revision));
+		pwyRes.addProperty(Wp.isAbout, model.createResource(this.domainName + "/Pathway/" + wpId + "_r" + revision));
 		pwyRes.addProperty(FOAF.page, model.createResource("http://www.wikipathways.org/instance/" + wpId + "_r" + revision));
 
 		Map<String,String> others = new HashMap<>();

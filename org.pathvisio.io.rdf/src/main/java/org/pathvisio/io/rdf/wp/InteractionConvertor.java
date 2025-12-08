@@ -1,4 +1,5 @@
 // Copyright 2015 BiGCaT Bioinformatics
+//           2025 Egon Willighagen <egon.willighagen@gmail.com>
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -41,19 +42,22 @@ import org.pathvisio.libgpml.model.type.ObjectType;
  * 
  * @author mkutmon
  * @author ryanmiller
+ * @author egonw
  *
  */
 public class InteractionConvertor {
 
+	String domainName;
 	IDMapperStack mapper;
 	Convertor convertor;
 	
-	protected InteractionConvertor(Convertor convertor) {
-		this(convertor, null);
+	protected InteractionConvertor(Convertor convertor, String domainName) {
+		this(convertor, domainName, null);
 	}
 	
-	protected InteractionConvertor(Convertor convertor, IDMapperStack mapper) {
+	protected InteractionConvertor(Convertor convertor, String domainName, IDMapperStack mapper) {
 		this.convertor = convertor;
+		this.domainName = domainName;
 		this.mapper = mapper;
 	}
 
@@ -108,7 +112,7 @@ public class InteractionConvertor {
 				System.out.println("WARNING - different line types in one interaction");
 			} else {
 				Resource intRes = createResource(model, wpId, revision, interaction);
-				String gpmlURL = Utils.WP_RDF_URL + "/Pathway/" + wpId + "_r" + revision
+				String gpmlURL = this.domainName + "/Pathway/" + wpId + "_r" + revision
 						+ "/Interaction/" + interaction.getElementId();
 				Resource gpmlRes = model.createResource(gpmlURL);
 				Map<types, List<PathwayObject>> participants = getParticipants(intRes, participatingLines, lt);
@@ -252,7 +256,7 @@ public class InteractionConvertor {
 	}
 
 	private Resource createResource(Model model, String wpId, String revision, Interaction interaction) {
-		String url = Utils.WP_RDF_URL + "/Pathway/" + wpId + "_r" + revision
+		String url = this.domainName + "/Pathway/" + wpId + "_r" + revision
 				+ "/WP/Interaction/" + interaction.getElementId();
 		return model.createResource(url);
 	}

@@ -31,15 +31,17 @@ import org.pathvisio.libgpml.model.PathwayElement.CitationRef;
 
 public class DataNodeConvertor {
 
+	String domainName;
 	IDMapperStack mapper;
 	Convertor convertor;
 	
-	protected DataNodeConvertor(Convertor convertor) {
-		this(convertor, null);
+	protected DataNodeConvertor(Convertor convertor, String domainName) {
+		this(convertor, domainName, null);
 	}
 	
-	protected DataNodeConvertor(Convertor convertor, IDMapperStack mapper) {
+	protected DataNodeConvertor(Convertor convertor, String domainName, IDMapperStack mapper) {
 		this.convertor = convertor;
+		this.domainName = domainName;
 		this.mapper = mapper;
 	}
 
@@ -143,7 +145,7 @@ public class DataNodeConvertor {
 							}
 						}
 
-						datanodeRes.addProperty(Wp.isAbout, model.createResource(Utils.WP_RDF_URL + "/Pathway/" + wpId + "_r" + revision + "/DataNode/" + elem.getElementId()));
+						datanodeRes.addProperty(Wp.isAbout, model.createResource(this.domainName + "/Pathway/" + wpId + "_r" + revision + "/DataNode/" + elem.getElementId()));
 						datanodeRes.addLiteral(RDFS.label, elem.getTextLabel().replace("\n", " ").trim());
 						datanodeRes.addProperty(DCTerms.isPartOf, convertor.pwyRes);
 					}

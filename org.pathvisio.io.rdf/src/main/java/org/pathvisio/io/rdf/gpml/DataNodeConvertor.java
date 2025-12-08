@@ -29,16 +29,18 @@ import org.pathvisio.libgpml.model.type.LineStyleType;
 
 public class DataNodeConvertor {
 
+	String domainName;
 	IDMapperStack mapper;
 	Convertor convertor;
 	CommentConvertor commentConvertor;
 	
-	protected DataNodeConvertor(Convertor convertor) {
-		this(convertor, null);
+	protected DataNodeConvertor(Convertor convertor, String domainName) {
+		this(convertor, domainName, null);
 	}
 	
-	protected DataNodeConvertor(Convertor convertor, IDMapperStack mapper) {
+	protected DataNodeConvertor(Convertor convertor, String domainName, IDMapperStack mapper) {
 		this.commentConvertor = new CommentConvertor(convertor);
+		this.domainName = domainName;
 		this.convertor = convertor;
 		this.mapper = mapper;
 	}

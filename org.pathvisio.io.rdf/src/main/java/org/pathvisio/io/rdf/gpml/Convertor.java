@@ -1,5 +1,5 @@
 // Copyright (c) 2015 BiGCaT Bioinformatics
-//               2022 Egon Willighagen <egon.willighagen@gmail.com>
+//               2022-2025 Egon Willighagen <egon.willighagen@gmail.com>
 // 
 // Conversion from GPML pathways to RDF
 // 
@@ -47,19 +47,25 @@ public class Convertor {
 	GroupConvertor groupConvertor;
 
 	// cached things
+	String domainName;
 	Resource pwyRes;
 	Map<String, Resource> datanodes;
 
 	public Convertor(PathwayModel pathway) {
+		this(pathway, Utils.WP_RDF_URL);
+	}
+
+	public Convertor(PathwayModel pathway, String domainName) {
 		this.pathway = pathway;
-		dataNodeConvertor = new DataNodeConvertor(this);
+		this.domainName = domainName;
+		dataNodeConvertor = new DataNodeConvertor(this, domainName);
 		labelConvertor = new LabelConvertor(this);
 		interactionConvertor = new InteractionConvertor(this);
 		groupConvertor = new GroupConvertor(this);
 	}
 
-	public Convertor(PathwayModel pathway, IDMapperStack mapper) {
-		this(pathway);
+	public Convertor(PathwayModel pathway, String domainName, IDMapperStack mapper) {
+		this(pathway, domainName);
 	}
 	
 	public Model asRDF() {
@@ -115,7 +121,7 @@ public class Convertor {
 		String wpId = pathway.getXref().getId();
 		String revision = Utils.getRevisionFromVersion(wpId, pathway.getVersion());
 
-		Resource pwyRes = model.createResource(Utils.WP_RDF_URL + "/Pathway/" + wpId + "_r" + revision);
+		Resource pwyRes = model.createResource(this.domainName + "/Pathway/" + wpId + "_r" + revision);
 		pwyRes.addProperty(RDFS.seeAlso, model.createResource("https://www.wikipathways.org/instance/" + wpId + "_r" + revision));
 
 		// FIXME: 
