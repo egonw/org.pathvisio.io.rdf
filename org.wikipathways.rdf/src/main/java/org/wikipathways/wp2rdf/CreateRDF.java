@@ -29,6 +29,7 @@ import org.apache.jena.rdf.model.Model;
 import org.bridgedb.DataSource;
 import org.bridgedb.Xref;
 import org.bridgedb.bio.DataSourceTxt;
+import org.pathvisio.io.rdf.utils.Utils;
 import org.pathvisio.libgpml.model.PathwayModel;
 
 public class CreateRDF {
@@ -37,6 +38,7 @@ public class CreateRDF {
 		final Options options = new Options();
 		options.addOption(new Option("h", "help", false, "Display the help information."));
 		options.addOption(new Option("r", "revision", true, "Revision of the pathway."));
+		options.addOption(new Option("d", "domain", true, "Domain name to use for the Resource IRIs."));
 
 		CommandLineParser parser = new DefaultParser();
 		CommandLine cmd = parser.parse(options, args);
@@ -74,9 +76,16 @@ public class CreateRDF {
 		pathway.getPathway().setXref(new Xref(wpid, wpSource));
 		if (cmd.hasOption('r')) pathway.getPathway().setVersion(cmd.getOptionValue('r'));
 
+		String baseIRI = null;
+		if (cmd.hasOption('d')) {
+			baseIRI = "http://" + cmd.getOptionValue('d');
+		} else {
+			baseIRI = Utils.WP_RDF_URL;
+		}
+
 		// generate the GPMLRDF content
 		try {
-			Model model = new org.pathvisio.io.rdf.gpml.Convertor(pathway).asRDF();
+			Model model = new org.pathvisio.io.rdf.gpml.Convertor(pathway, baseIRI).asRDF();
 
 			// serialize RDF
 			model.setNsPrefix("gpml", "http://vocabularies.wikipathways.org/gpml#");
