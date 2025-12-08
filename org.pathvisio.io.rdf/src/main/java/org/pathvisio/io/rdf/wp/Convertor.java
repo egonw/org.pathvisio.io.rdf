@@ -146,14 +146,29 @@ public class Convertor {
 
 		// organism info
 		String organism = pathway.getOrganism();
-		String taxonID = Organism.fromLatinName(organism) != null ?
-			Organism.fromLatinName(organism).taxonomyID().getId() :
-			others.get(organism);
-		if (taxonID == null) taxonID = "131567"; // cellular organisms
-		pwyRes.addLiteral(Wp.organismName, pathway.getOrganism());
-		Resource organismRes = model.createResource("http://purl.obolibrary.org/obo/NCBITaxon_" + taxonID);
-		pwyRes.addProperty(Wp.organism, organismRes);
-		organismRes.addProperty(model.createProperty("http://purl.obolibrary.org/obo/NCIT_C179773"), taxonID);
+		if (organism.contains(",")) {
+			String[] organismStrings = organism.split(",");
+			for (String singleOrganism : organismStrings) {
+				singleOrganism = singleOrganism.trim();
+				String taxonID = Organism.fromLatinName(singleOrganism) != null ?
+						Organism.fromLatinName(singleOrganism).taxonomyID().getId() :
+							others.get(singleOrganism);
+				if (taxonID == null) taxonID = "131567"; // cellular organisms
+				pwyRes.addLiteral(Wp.organismName, singleOrganism);
+				Resource organismRes = model.createResource("http://purl.obolibrary.org/obo/NCBITaxon_" + taxonID);
+				pwyRes.addProperty(Wp.organism, organismRes);
+				organismRes.addProperty(model.createProperty("http://purl.obolibrary.org/obo/NCIT_C179773"), taxonID);
+			}
+		} else {
+			String taxonID = Organism.fromLatinName(organism) != null ?
+					Organism.fromLatinName(organism).taxonomyID().getId() :
+						others.get(organism);
+			if (taxonID == null) taxonID = "131567"; // cellular organisms
+			pwyRes.addLiteral(Wp.organismName, pathway.getOrganism());
+			Resource organismRes = model.createResource("http://purl.obolibrary.org/obo/NCBITaxon_" + taxonID);
+			pwyRes.addProperty(Wp.organism, organismRes);
+			organismRes.addProperty(model.createProperty("http://purl.obolibrary.org/obo/NCIT_C179773"), taxonID);
+		}
 
 		// ontology tags
 		for (Annotation annot : this.pathway.getAnnotations()) {
