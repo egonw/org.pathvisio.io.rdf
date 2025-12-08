@@ -102,7 +102,7 @@ public class CreateRDF {
 		
 		// generate the WPRDF content
 		try {
-			Model model = new org.pathvisio.io.rdf.wp.Convertor(pathway).asRDF();
+			Model model = new org.pathvisio.io.rdf.wp.Convertor(pathway, baseIRI).asRDF();
 
 			// serialize RDF
 			model.setNsPrefix("biopax", "http://www.biopax.org/release/biopax-level3.owl#");
