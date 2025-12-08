@@ -182,14 +182,16 @@ public class Convertor {
 		}
 
 		// image
-		Resource pngRes = model.createResource("https://www.wikipathways.org//wpi/wpi.php?action=downloadFile&type=png&pwTitle=Pathway:" + wpId + "&oldid=r" + revision);
-		pwyRes.addProperty(FOAF.img, pngRes);
-		pngRes.addProperty(RDF.type, FOAF.Image);
-		pngRes.addLiteral(DCTerms.format, "image/png");
-		Resource svgRes = model.createResource("https://www.wikipathways.org//wpi/wpi.php?action=downloadFile&type=svg&pwTitle=Pathway:" + wpId + "&oldid=r" + revision);
-		pwyRes.addProperty(FOAF.img, svgRes);
-		svgRes.addProperty(RDF.type, FOAF.Image);
-		svgRes.addLiteral(DCTerms.format, "image/svg+xml");
+		if (Utils.WP_RDF_URL.equals(this.domainName)) {
+			Resource pngRes = model.createResource("https://www.wikipathways.org//wpi/wpi.php?action=downloadFile&type=png&pwTitle=Pathway:" + wpId + "&oldid=r" + revision);
+			pwyRes.addProperty(FOAF.img, pngRes);
+			pngRes.addProperty(RDF.type, FOAF.Image);
+			pngRes.addLiteral(DCTerms.format, "image/png");
+			Resource svgRes = model.createResource("https://www.wikipathways.org//wpi/wpi.php?action=downloadFile&type=svg&pwTitle=Pathway:" + wpId + "&oldid=r" + revision);
+			pwyRes.addProperty(FOAF.img, svgRes);
+			svgRes.addProperty(RDF.type, FOAF.Image);
+			svgRes.addLiteral(DCTerms.format, "image/svg+xml");
+		}
  
 		return pwyRes;
 	}
