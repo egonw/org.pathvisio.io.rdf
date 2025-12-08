@@ -63,8 +63,8 @@ public class CreateRDF {
         String localFile = gpmlFile.substring(index);
         String wpid      = localFile.substring(0,localFile.indexOf("."));
 
-        String gpmlrdfFile  = gpmlrdfFolder + prefix + wpid + ".ttl";
-        String wprdfFile  = wprdfFolder + prefix + wpid + ".ttl";
+        String gpmlrdfFile  = gpmlrdfFolder + wpid + ".ttl";
+        String wprdfFile  = wprdfFolder + wpid + ".ttl";
 
         DataSourceTxt.init();
         DataSource wpSource = DataSource.register("Wp", "WikiPathways").asDataSource();
