@@ -117,19 +117,27 @@ public class Convertor {
 		String wpId = pathway.getXref().getId();
 		String revision = Utils.getRevisionFromVersion(wpId, pathway.getVersion());
 
-		Resource pwyRes = model.createResource(Utils.IDENTIFIERS_ORG_URL + "/wikipathways/" + wpId + "_r" + revision);
-		Resource pwyConceptRes = model.createResource(Utils.IDENTIFIERS_ORG_URL + "/wikipathways/" + wpId);
+		Resource pwyRes = model.createResource(
+			Utils.WP_RDF_URL.equals(this.domainName) ? Utils.IDENTIFIERS_ORG_URL + "/wikipathways/" + wpId + "_r" + revision
+				: this.domainName + "/pathways/" + wpId + "_r" + revision
+		);
+		Resource pwyConceptRes = model.createResource(
+			Utils.WP_RDF_URL.equals(this.domainName) ? Utils.IDENTIFIERS_ORG_URL + "/wikipathways/" + wpId
+				: this.domainName + "/pathways/" + wpId
+		);
 		pwyConceptRes.addProperty(Pav.hasVersion, pwyRes);
 		pwyRes.addProperty(RDF.type, Wp.Pathway);
 		pwyRes.addProperty(RDF.type, SKOS.Collection);
-		pwyRes.addProperty(DC_11.identifier, model.createResource(Utils.IDENTIFIERS_ORG_URL + "/wikipathways/" + wpId));
+		pwyRes.addProperty(DC_11.identifier, pwyConceptRes);
 		pwyRes.addLiteral(DC_11.source, "WikiPathways");
 		pwyRes.addLiteral(DCTerms.identifier, wpId);
 		pwyRes.addLiteral(DC_11.title, model.createLiteral(pathway.getTitle(), "en"));
 		if (pathway.getDescription() != null)
 			pwyRes.addLiteral(DCTerms.description, pathway.getDescription());
-		pwyRes.addProperty(Wp.isAbout, model.createResource(this.domainName + "/Pathway/" + wpId + "_r" + revision));
-		pwyRes.addProperty(FOAF.page, model.createResource("http://www.wikipathways.org/instance/" + wpId + "_r" + revision));
+		pwyRes.addProperty(Wp.isAbout, pwyRes);
+		if (Utils.WP_RDF_URL.equals(this.domainName)) {
+			pwyRes.addProperty(FOAF.page, model.createResource("http://www.wikipathways.org/instance/" + wpId + "_r" + revision));
+		}
 
 		Map<String,String> others = new HashMap<>();
 		others.put("Physcomitrium patens","3218");
