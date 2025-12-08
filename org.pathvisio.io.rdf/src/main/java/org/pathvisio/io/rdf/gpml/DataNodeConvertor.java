@@ -50,7 +50,7 @@ public class DataNodeConvertor {
 	}
 
 	public void convertDataNode(DataNode elem, Model model, String wpId, String revision) {
-		String pwResURI = "http://rdf.wikipathways.org/Pathway/" + wpId + "_r" + revision; 
+		String pwResURI = domainName + "/Pathway/" + wpId + "_r" + revision; 
 		Resource datanodeRes = model.createResource(pwResURI + "/DataNode/" + 
 		    (elem.getElementId() != null ? elem.getElementId() : elem.hashCode()));
 		datanodeRes.addProperty(RDF.type, Gpml.DATA_NODE);
