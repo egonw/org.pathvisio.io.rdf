@@ -60,6 +60,10 @@ public class CreateRDF {
             index = gpmlFile.indexOf("PC");
             prefix = "PC";
 		}
+        if (index == -1 ) {
+            index = gpmlFile.indexOf("RC");
+            prefix = "RC";
+		}
         String localFile = gpmlFile.substring(index);
         String wpid      = localFile.substring(0,localFile.indexOf("."));
 
