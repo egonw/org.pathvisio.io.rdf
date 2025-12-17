@@ -54,7 +54,6 @@ public class Convertor {
 	DataNodeConvertor dataNodeConvertor;
 	InteractionConvertor interactionConvertor;
 	GroupConvertor groupConvertor;
-	IDMapperStack mapper;
 
 	// cached things
 	String domainName;
@@ -62,9 +61,9 @@ public class Convertor {
 	Map<String, Resource> datanodes;
 
 	public Convertor(PathwayModel pathway) throws Exception {
-		this(pathway, Utils.WP_RDF_URL);
+		this(pathway, Utils.WP_RDF_URL, null);
 	}
-	public Convertor(PathwayModel pathway, String domainName) throws Exception {
+	public Convertor(PathwayModel pathway, String domainName, IDMapperStack mapper) throws Exception {
 		this.pathway = pathway;
 		this.domainName = domainName;
 		this.datanodes = new HashMap<>();

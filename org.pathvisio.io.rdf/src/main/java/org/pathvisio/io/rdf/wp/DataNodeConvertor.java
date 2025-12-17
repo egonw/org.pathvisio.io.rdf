@@ -25,7 +25,6 @@ import org.bridgedb.DataSource;
 import org.bridgedb.IDMapperStack;
 import org.bridgedb.Xref;
 import org.pathvisio.io.rdf.ontologies.Wp;
-import org.pathvisio.io.rdf.utils.Utils;
 import org.pathvisio.libgpml.model.DataNode;
 import org.pathvisio.libgpml.model.PathwayElement.CitationRef;
 
@@ -108,6 +107,8 @@ public class DataNodeConvertor {
 								
 							case "Metabolite":
 								datanodeRes.addProperty(RDF.type, Wp.Metabolite);
+								try { BridgeDbIDMapper.getUnifiedIdentifiers(model, mapper, xref, datanodeRes);
+								} catch(Exception exception) {} // ignore
 								break;
 								
 							case "Rna":

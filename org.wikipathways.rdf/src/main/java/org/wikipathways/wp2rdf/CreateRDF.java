@@ -1,4 +1,4 @@
-// Copyright 2022 Egon Willighagen
+// Copyright 2022-2025 Egon Willighagen
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -18,6 +18,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStream;
+import java.util.Properties;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
@@ -27,9 +28,11 @@ import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.jena.rdf.model.Model;
 import org.bridgedb.DataSource;
+import org.bridgedb.IDMapperStack;
 import org.bridgedb.Xref;
 import org.bridgedb.bio.DataSourceTxt;
 import org.pathvisio.io.rdf.utils.Utils;
+import org.pathvisio.io.rdf.wp.BridgeDbIDMapper;
 import org.pathvisio.libgpml.model.PathwayModel;
 
 public class CreateRDF {
@@ -42,7 +45,7 @@ public class CreateRDF {
 
 		CommandLineParser parser = new DefaultParser();
 		CommandLine cmd = parser.parse(options, args);
-		
+
 		if (cmd.hasOption("h") || args.length < 4) {
 			HelpFormatter formatter = new HelpFormatter();
 			formatter.printHelp("CreateRDF [GPML] [GPMLRDF_FOLDER] [WPRDF_FOLDER] [VERSION]", options);
@@ -63,7 +66,7 @@ public class CreateRDF {
         if (index == -1 ) {
             index = gpmlFile.indexOf("RC");
             prefix = "RC";
-		}
+	}
         String localFile = gpmlFile.substring(index);
         String wpid      = localFile.substring(0,localFile.indexOf("."));
 
@@ -74,9 +77,9 @@ public class CreateRDF {
         DataSource wpSource = DataSource.register("Wp", "WikiPathways").asDataSource();
 
         PathwayModel pathway = new PathwayModel();
-		InputStream gpmlStream = new FileInputStream(new File(gpmlFile)); 
+		InputStream gpmlStream = new FileInputStream(new File(gpmlFile));
 		pathway.readFromXml(gpmlStream, false);
-		
+
 		pathway.getPathway().setXref(new Xref(wpid, wpSource));
 		if (cmd.hasOption('r')) pathway.getPathway().setVersion(cmd.getOptionValue('r'));
 
@@ -103,10 +106,21 @@ public class CreateRDF {
 			// skip
 			System.out.println("Error while creating GPMLRDF for " + wpid + ": " + exception.getMessage());
 		}
-		
+
+		// create a BridgeDb mapper stack
+		final Properties prop = new Properties();
+		IDMapperStack mapper = null;
+		String derbyFolder = "/tmp/" + System.getProperty("OPSBRIDGEDB", "OPSBRIDGEDB");
+		if (new File(derbyFolder).exists()) {
+  	        prop.load(new FileInputStream(derbyFolder + "/config.properties"));
+		    mapper = BridgeDbIDMapper.createBridgeDbMapper(prop);
+		} else {
+			System.out.println("WARN: BridgeDb config file folder does not exist: " + derbyFolder);
+		}
+
 		// generate the WPRDF content
 		try {
-			Model model = new org.pathvisio.io.rdf.wp.Convertor(pathway, baseIRI).asRDF();
+			Model model = new org.pathvisio.io.rdf.wp.Convertor(pathway, baseIRI, mapper).asRDF();
 
 			// serialize RDF
 			model.setNsPrefix("biopax", "http://www.biopax.org/release/biopax-level3.owl#");
