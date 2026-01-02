@@ -6,7 +6,7 @@ import java.io.InputStream;
 import org.apache.jena.rdf.model.Model;
 import org.bridgedb.DataSource;
 import org.bridgedb.Xref;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.pathvisio.libgpml.model.PathwayModel;
 
 public class ConvertorTest {
