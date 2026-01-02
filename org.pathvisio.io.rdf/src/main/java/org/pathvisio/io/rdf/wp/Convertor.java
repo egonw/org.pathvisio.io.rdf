@@ -160,7 +160,10 @@ public class Convertor {
 				String taxonID = Organism.fromLatinName(singleOrganism) != null ?
 						Organism.fromLatinName(singleOrganism).taxonomyID().getId() :
 							others.get(singleOrganism);
-				if (taxonID == null) taxonID = "131567"; // cellular organisms
+				if (taxonID == null) {
+					System.out.println("Unknown taxon: " + singleOrganism);
+					taxonID = "131567"; // cellular organisms
+				}
 				pwyRes.addLiteral(Wp.organismName, singleOrganism);
 				Resource organismRes = model.createResource("http://purl.obolibrary.org/obo/NCBITaxon_" + taxonID);
 				pwyRes.addProperty(Wp.organism, organismRes);
