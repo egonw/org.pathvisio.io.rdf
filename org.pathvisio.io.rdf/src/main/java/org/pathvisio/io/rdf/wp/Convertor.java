@@ -139,17 +139,43 @@ public class Convertor {
 		}
 
 		Map<String,String> others = new HashMap<>();
-		others.put("Physcomitrium patens","3218");
-		others.put("Ocimum basilicum", "1753");
-		others.put("Ulva curvata", "135247");
-		others.put("Papaver somniferum", "3469");
-		others.put("Triglochin maritima", "55501");
-		others.put("Phaseolus vulgaris", "3885");
-		others.put("Petunia x hybrida", "4102");
-		others.put("Erythroxylum coca", "289672");
 		others.put("Agapanthus africanus", "51501");
 		others.put("Artemisia annua", "35608");
-		others.put("", "");
+		others.put("Chlamydomonas reinhardtii","3055");
+		others.put("Erythroxylum coca", "289672");
+		others.put("Loxodonta africana","9785");
+		others.put("Nicotiana tabacum","4097");
+		others.put("Ocimum basilicum", "39350");
+		others.put("Papaver somniferum", "3469");
+		others.put("Petunia x hybrida", "4102");
+		others.put("Phaseolus vulgaris", "3885");
+		others.put("Physcomitrium patens","3218");
+		others.put("Pisum sativum","3888");
+		others.put("Prymnesium parvum", "97485");
+		others.put("Solanum tuberosum","4113");
+		others.put("Triglochin maritima", "55501");
+		others.put("Ulva curvata", "135247");
+		others.put("Brassica oleracea","3712");
+		others.put("Spinacia oleracea","3562");
+		others.put("Solanum habrochaites","62890");
+		others.put("Malus domestica","3750");
+		others.put("Catharanthus roseus","4058");
+		others.put("Cicer arietinum","3827");
+		others.put("Cucumis sativus","3659");
+		others.put("Picea abies","3329");
+		others.put("Pinus taeda","");
+		others.put("Capsicum annuum","4072");
+		others.put("Cucumis melo","3656");
+		others.put("Ricinus communis","3988");
+		others.put("Lupinus luteus","3873");
+		others.put("Camellia sinensis","4442");
+		others.put("Vigna radiata","157791");
+		others.put("Medicago sativa","3879");
+		others.put("Manihot esculenta","3983");
+		others.put("Lotus japonicus","34305");
+		others.put("Abies grandis","46611");
+		others.put("Glycyrrhiza glabra","49827");
+		others.put("","");
 
 		// organism info
 		String organism = pathway.getOrganism();
