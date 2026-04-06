@@ -25,14 +25,15 @@ import org.bridgedb.DataSource;
 import org.bridgedb.IDMapperStack;
 import org.bridgedb.Xref;
 import org.pathvisio.io.rdf.ontologies.Wp;
+import org.pathvisio.io.rdf.wp.plugin.bridgedb.BridgeDbIDMapper;
 import org.pathvisio.libgpml.model.DataNode;
 import org.pathvisio.libgpml.model.PathwayElement.CitationRef;
 
 public class DataNodeConvertor {
 
 	String domainName;
-	IDMapperStack mapper;
 	Convertor convertor;
+	org.pathvisio.io.rdf.wp.plugin.bridgedb.DataNodeConvertor bridgedbDataNodeConvertor;
 	
 	protected DataNodeConvertor(Convertor convertor, String domainName) {
 		this(convertor, domainName, null);
@@ -41,7 +42,9 @@ public class DataNodeConvertor {
 	protected DataNodeConvertor(Convertor convertor, String domainName, IDMapperStack mapper) {
 		this.convertor = convertor;
 		this.domainName = domainName;
-		this.mapper = mapper;
+		if (mapper != null) {
+			this.bridgedbDataNodeConvertor = new org.pathvisio.io.rdf.wp.plugin.bridgedb.DataNodeConvertor(mapper);
+		}
 	}
 
 	public boolean validXref(Xref xref) {
@@ -107,8 +110,9 @@ public class DataNodeConvertor {
 								
 							case "Metabolite":
 								datanodeRes.addProperty(RDF.type, Wp.Metabolite);
-								try { BridgeDbIDMapper.getUnifiedIdentifiers(model, mapper, xref, datanodeRes);
-								} catch(Exception exception) {} // ignore
+								if (this.bridgedbDataNodeConvertor.isEnabled()) {
+									this.bridgedbDataNodeConvertor.convertDataNode(elem, model, datanodeRes);
+								}
 								break;
 								
 							case "Rna":

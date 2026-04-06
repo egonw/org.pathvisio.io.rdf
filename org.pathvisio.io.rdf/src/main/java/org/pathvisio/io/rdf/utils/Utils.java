@@ -1,6 +1,6 @@
-// WP2RDF
-// Conversion from GPML pathways to RDF
-// Copyright 2015 BiGCaT Bioinformatics
+// Copyright 2015  Martina Kutmon
+//                 Ryan Miller
+//           2026  Egon Willighagen
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -45,10 +45,11 @@ import org.pathvisio.io.rdf.ontologies.Void;
 import org.pathvisio.io.rdf.ontologies.Wp;
 
 /**
+ * Conversion from GPML pathways to RDF.
  * 
  * @author mkutmon
  * @author ryanmiller
- *
+ * @author egonw
  */
 public class Utils {
 	
@@ -124,4 +125,13 @@ public class Utils {
 		}
 		return revision;
 	}
+
+    public static boolean isPluginEnabled(String plugin) {
+    	String enabledPlugins = System.getProperty("rdf.plugins", "");
+    	for (String enabledPlugin : enabledPlugins.split(",")) {
+    		if (enabledPlugin.equalsIgnoreCase(plugin)) return true;
+    	}
+    	return false;
+    }
+
 }

@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
-package org.pathvisio.io.rdf.wp;
+package org.pathvisio.io.rdf.wp.plugin.bridgedb;
 
 import java.io.File;
 import java.io.FilenameFilter;
@@ -85,6 +85,9 @@ public class BridgeDbIDMapper {
 		outputBridgeDbMapping(model, mapper, idXref, internalWPDataNodeResource,
 			"S", "https://identifiers.org/uniprot/", Wp.bdbUniprot
 		);
+		outputBridgeDbMapping(model, mapper, idXref, internalWPDataNodeResource,
+			"S", "http://purl.uniprot.org/uniprot/", OWL.sameAs
+		);
 		//Entrez Gene
 		outputBridgeDbMapping(model, mapper, idXref, internalWPDataNodeResource,
 			"L", "https://identifiers.org/ncbigene/", Wp.bdbEntrezGene
@@ -121,9 +124,18 @@ public class BridgeDbIDMapper {
 					"Ck", "https://identifiers.org/kegg.compound/", Wp.bdbKeggCompound
 				); 
 		// LipidMaps
-				outputBridgeDbMapping(model, mapper, idXref, internalWPDataNodeResource,
-					"Lm", "https://identifiers.org/lipidmaps/", Wp.bdbLipidMaps
-				); 
+		outputBridgeDbMapping(model, mapper, idXref, internalWPDataNodeResource,
+			"Lm", "https://identifiers.org/lipidmaps/", Wp.bdbLipidMaps
+		);
+		outputBridgeDbMapping(model, mapper, idXref, internalWPDataNodeResource,
+			"Lm", "https://www.lipidmaps.org/rdf/", OWL.sameAs
+		);
+
+		// SwissLipids (OWL SameAs only)
+		outputBridgeDbMapping(model, mapper, idXref, internalWPDataNodeResource,
+			"Sl", "https://swisslipids.org/rdf/SLM_", OWL.sameAs
+		);
+
 		// InChIKey
 		if (idXref.getDataSource().equals(Wp.bdbInChIKey))
 			System.out.println("InChIKey found: " + idXref);
@@ -156,6 +168,9 @@ public class BridgeDbIDMapper {
 		// Rhea
 		outputBridgeDbMapping(model, mapper, idXref, internalWPDataNodeResource,
 			"Rh", "https://identifiers.org/rhea/", Wp.bdbRhea
+		);
+		outputBridgeDbMapping(model, mapper, idXref, internalWPDataNodeResource,
+			"Rh", "http://rhea-db.org/rhea/", OWL.sameAs
 		);
 
 		// Complexes

@@ -32,7 +32,7 @@ import org.bridgedb.IDMapperStack;
 import org.bridgedb.Xref;
 import org.bridgedb.bio.DataSourceTxt;
 import org.pathvisio.io.rdf.utils.Utils;
-import org.pathvisio.io.rdf.wp.BridgeDbIDMapper;
+import org.pathvisio.io.rdf.wp.plugin.bridgedb.BridgeDbIDMapper;
 import org.pathvisio.libgpml.model.PathwayModel;
 
 public class CreateRDF {
