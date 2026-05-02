@@ -42,9 +42,7 @@ public class DataNodeConvertor {
 	protected DataNodeConvertor(Convertor convertor, String domainName, IDMapperStack mapper) {
 		this.convertor = convertor;
 		this.domainName = domainName;
-		if (mapper != null) {
-			this.bridgedbDataNodeConvertor = new org.pathvisio.io.rdf.wp.plugin.bridgedb.DataNodeConvertor(mapper);
-		}
+		this.bridgedbDataNodeConvertor = new org.pathvisio.io.rdf.wp.plugin.bridgedb.DataNodeConvertor(mapper);
 	}
 
 	public boolean validXref(Xref xref) {
