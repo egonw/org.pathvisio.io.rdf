@@ -60,6 +60,7 @@ public class CreateRDF {
 		List<String> activePlugins = Collections.emptyList();
 		if (cmd.hasOption("p")) {
 			activePlugins = Arrays.asList(cmd.getOptionValue('p').split(","));
+			System.setProperty("rdf.plugins", cmd.getOptionValue('p'));
 		}
 
 		args = cmd.getArgs();
