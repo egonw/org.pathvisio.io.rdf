@@ -18,6 +18,10 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import java.util.Properties;
 
 import org.apache.commons.cli.CommandLine;
@@ -42,6 +46,7 @@ public class CreateRDF {
 		options.addOption(new Option("h", "help", false, "Display the help information."));
 		options.addOption(new Option("r", "revision", true, "Revision of the pathway."));
 		options.addOption(new Option("d", "domain", true, "Domain name to use for the Resource IRIs."));
+		options.addOption(new Option("p", "plugins", true, "Comma-separated list of plugins."));
 
 		CommandLineParser parser = new DefaultParser();
 		CommandLine cmd = parser.parse(options, args);
@@ -51,12 +56,17 @@ public class CreateRDF {
 			formatter.printHelp("CreateRDF [GPML] [GPMLRDF_FOLDER] [WPRDF_FOLDER] [VERSION]", options);
 			System.exit(0);
 		}
+		
+		List<String> activePlugins = Collections.emptyList();
+		if (cmd.hasOption("p")) {
+			activePlugins = Arrays.asList(cmd.getOptionValue('p').split(","));
+		}
 
 		args = cmd.getArgs();
         String gpmlFile = args[0];
         String gpmlrdfFolder  = args[1];
         String wprdfFolder  = args[2];
-        String version  = args[3];
+        String version = (args.length > 3 ? args[3] : "1"); // use -r instead
         String prefix = "WP";
         int index = gpmlFile.lastIndexOf("WP");
         if (index == -1 ) {
@@ -105,17 +115,20 @@ public class CreateRDF {
 		} catch (Exception exception) {
 			// skip
 			System.out.println("Error while creating GPMLRDF for " + wpid + ": " + exception.getMessage());
+			exception.printStackTrace();
 		}
 
-		// create a BridgeDb mapper stack
-		final Properties prop = new Properties();
+		// create a BridgeDb mapper stack (if)
 		IDMapperStack mapper = null;
-		String derbyFolder = "/tmp/" + System.getProperty("OPSBRIDGEDB", "OPSBRIDGEDB");
-		if (new File(derbyFolder).exists()) {
-  	        prop.load(new FileInputStream(derbyFolder + "/config.properties"));
-		    mapper = BridgeDbIDMapper.createBridgeDbMapper(prop);
-		} else {
-			System.out.println("WARN: BridgeDb config file folder does not exist: " + derbyFolder);
+		if (activePlugins.contains("bridgedb")) {
+			final Properties prop = new Properties();
+			String derbyFolder = "/tmp/" + System.getProperty("OPSBRIDGEDB", "OPSBRIDGEDB");
+			if (new File(derbyFolder).exists()) {
+				prop.load(new FileInputStream(derbyFolder + "/config.properties"));
+				mapper = BridgeDbIDMapper.createBridgeDbMapper(prop);
+			} else {
+				System.out.println("WARN: BridgeDb config file folder does not exist: " + derbyFolder);
+			}
 		}
 
 		// generate the WPRDF content
