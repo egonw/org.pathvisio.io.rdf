@@ -116,7 +116,9 @@ public class Utils {
 
 	public static String getRevisionFromVersion(String wpId, String version) {
 		String revision = "0";
-		if (version.startsWith(wpId + "_r")) {
+		if (version == null) {
+			// just use revision 0
+		} else if (version.startsWith(wpId + "_r")) {
 			// pattern: "WP1028_r125625"
 			revision = version.split("_")[1].substring(1);
 		} else {
